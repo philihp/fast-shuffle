@@ -1,0 +1,25 @@
+{
+  "name": "fast-shuffle",
+  "version": "1.0.0",
+  "description": "A fast implementation of a fisher-yates shuffle that does not mutate the source array.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/philihp/fast-shuffle.git"
+  },
+  "keywords": [
+    "shuffle"
+  ],
+  "author": "Philihp Busby <philihp@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/philihp/fast-shuffle/issues"
+  },
+  "homepage": "https://github.com/philihp/fast-shuffle#readme"
+}
