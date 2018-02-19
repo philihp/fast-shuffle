@@ -10,6 +10,31 @@ be used in pure function reducers.
 By encouraging stateless code with no side effects, testing is easier
 and we have more confidence in code correctness.
 
+## Usage
+
+```
+npm install --save fast-shuffle
+```
+
+Then call it from your code
+
+```js
+import shuffle from 'fast-shuffle'
+
+const suits = ['♣','♦','♥','♠']
+const faces = ['2','3','4','5','6','7','8','9','T','J','Q','K','A']
+const sortedDeck = suits.map(suit => faces.map(face => face + suit))
+
+const shuffledDeck = shuffle(sortedDeck)
+```
+
+You can also call it with your own PRNG by providing a function which returns entropy
+in the form of a random float between 0 to 1
+
+```js
+const shuffledDeck = shuffle(sortedDeck, () => Math.random())
+```
+
 ## Why not use existing libraries?
 
 Many libraries do the shuffle in-place, which is a feature of Fisher-Yates shuffling. The source array can be cloned, but I like this
