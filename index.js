@@ -1,12 +1,13 @@
 const shuffle = (deck, random = Math.random) => {
   let clone = deck.slice(0)
-  let shuffled = []
+  let srcIndex = deck.length
+  let dstIndex = 0
+  let shuffled = new Array(srcIndex)
 
-  while(clone.length) {
-      let rIndex = Math.floor(clone.length * random())
-      shuffled.push(clone[rIndex])
-      clone[rIndex] = clone[clone.length - 1]
-      clone.pop()
+  while(srcIndex) {
+    let randIndex = (srcIndex * random()) | 0
+    shuffled[dstIndex++] = clone[randIndex]
+    clone[randIndex] = clone[--srcIndex]
   }
 
   return shuffled
