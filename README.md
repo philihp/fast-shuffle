@@ -1,5 +1,7 @@
 # Fast Shuffle
 
+![Build Status](https://travis-ci.org/philihp/fast-shuffle.svg?branch=master)
+
 Fast Shuffle is a Fisher-Yates shuffle which relaxes the constraint of
 performing the shuffle in-place, and instead guarantees that the source
 array will not be mutated. The intent is to provide a shuffle which can
@@ -10,7 +12,7 @@ and we have more confidence in code correctness.
 
 ## Why not use existing libraries?
 
-Most libraries do the shuffle in-place, which is a feature of Fisher-Yates shuffling. The source array can be cloned, but I like this
+Many libraries do the shuffle in-place, which is a feature of Fisher-Yates shuffling. The source array can be cloned, but I like this
 for the simpler interface.
 
 Other libraries use Array.splice() to remove the element from the
