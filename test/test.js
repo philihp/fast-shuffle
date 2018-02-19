@@ -1,4 +1,4 @@
-import shuffle from '../index'
+import shuffle from '../src/index'
 
 describe('shuffle', () => {
   it('shuffles the array', () => {
