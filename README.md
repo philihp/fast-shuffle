@@ -1,14 +1,14 @@
 # Fast Shuffle
 
-![Build Status](https://travis-ci.org/philihp/fast-shuffle.svg?branch=master)
+![Build Status](https://travis-ci.org/philihp/fast-shuffle.svg?branch=master) [![npm version](https://badge.fury.io/js/fast-shuffle.svg)](https://badge.fury.io/js/fast-shuffle)
 
 Fast Shuffle is a Fisher-Yates shuffle which relaxes the constraint of
 performing the shuffle in-place, and instead guarantees that the source
-array will not be mutated. The intent is to provide a shuffle which can
-be used in pure function reducers.
+array will not be mutated.
 
-By encouraging stateless code with no side effects, testing is easier
-and we have more confidence in code correctness.
+The intent is to provide a shuffle with a simple interface for pure function
+Redux reducers. By encouraging stateless code with no side effects, testing
+is easier and we have more confidence in code correctness.
 
 ## Usage
 
