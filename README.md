@@ -1,6 +1,6 @@
 # Fast Shuffle
 
-Fast Shuffle is a fisher-yates shuffle which relaxes the constraint of
+Fast Shuffle is a Fisher-Yates shuffle which relaxes the constraint of
 performing the shuffle in-place, and instead guarantees that the source
 array will not be mutated. The intent is to provide a shuffle which can
 be used in pure function reducers.
