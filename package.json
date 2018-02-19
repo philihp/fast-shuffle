@@ -1,6 +1,6 @@
 {
   "name": "fast-shuffle",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A fast implementation of a fisher-yates shuffle that does not mutate the source array.",
   "keywords": [
     "knuth",

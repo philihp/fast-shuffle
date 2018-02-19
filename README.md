@@ -28,17 +28,31 @@ const sortedDeck = suits.map(suit => faces.map(face => face + suit))
 const shuffledDeck = shuffle(sortedDeck)
 ```
 
-You can also call it with your own PRNG by providing a function which returns entropy
-in the form of a random float between 0 to 1
+By giving it a pseudoRNG, you can also safely use it in your redux reducers.
 
 ```js
-const shuffledDeck = shuffle(sortedDeck, () => Math.random())
+import MersenneTwister from 'mersenne-twister'
+const prng = new MersenneTwister(12345)
+
+const state = {
+  deck: sortedDeck
+  bet: 100,
+  dealer: []
+  player: []
+  ...
+}
+
+const newState = {
+  ...state,
+  deck: shuffle(state.deck, prng.random)
+}
 ```
 
 ## Why not use existing libraries?
 
-Many libraries do the shuffle in-place, which is a feature of Fisher-Yates shuffling. The source array can be cloned, but I like this
-for the simpler interface.
+Many libraries do the shuffle in-place, which is a feature of Fisher-Yates
+shuffling. The source array can be cloned, but I like this for the simpler
+interface.
 
 Other libraries use Array.splice() to remove the element from the
 array. This causes the runtime of the shuffle to increase from linear
@@ -46,14 +60,8 @@ to quadratic time.
 
 ## Optimizations
 
-An easy optimization for this is to swap the last element with the
-randomly selected element, and then pop it out. Since we don't care
-about preserving the order of the source array, this is fine.
-
-Repeated pop() of the src array and push() of the dst array also causes
-extra runtime. Since it is known the final size of the dst array,
-initializing it to that size saves time.
-
-Since the loop is already getting fairly tight, the final optimization
-that most existing libraries don't do is avoid `Math.floor` by a bitwise
-`| 0`.
+* Don't use splice. Removing elements with splice preserves order, which is
+  very expensive and unnecessary.
+* Avoid repeated pop() and push(). The ultimate size of the output array
+  will not change.
+* Avoid Math.floor. Remove fractions with a binary or with zero.
