@@ -1,6 +1,6 @@
 {
   "name": "fast-shuffle",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "A fast implementation of a fisher-yates shuffle that does not mutate the source array.",
   "homepage": "https://github.com/philihp/fast-shuffle",
   "repository": "https://github.com/philihp/fast-shuffle.git",
@@ -24,12 +24,21 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-jest": "^22.2.2",
-    "babel-preset-es2015": "^6.24.1",
-    "cross-env": "^5.1.3",
-    "jest": "^22.3.0",
-    "regenerator-runtime": "^0.11.1"
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-jest": "^24.1.0",
+    "jest": "^24.1.0",
+    "jest-nyancat-reporter": "^1.0.5"
+  },
+  "jest": {
+    "reporters": [
+      [
+        "jest-nyancat-reporter",
+        {
+          "suppressErrorReporter": false
+        }
+      ]
+    ]
   }
 }
