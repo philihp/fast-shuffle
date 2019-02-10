@@ -1,6 +1,6 @@
 {
   "name": "fast-shuffle",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A fast implementation of a fisher-yates shuffle that does not mutate the source array.",
   "homepage": "https://github.com/philihp/fast-shuffle",
   "repository": "https://github.com/philihp/fast-shuffle.git",
