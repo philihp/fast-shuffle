@@ -29,7 +29,7 @@
     "@babel/preset-env": "7.6.2",
     "babel-jest": "24.9.0",
     "jest": "24.9.0",
-    "jest-nyancat-reporter": "1.0.5"
+    "jest-nyancat-reporter": "2.0.0"
   },
   "jest": {
     "reporters": [
