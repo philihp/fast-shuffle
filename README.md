@@ -1,8 +1,8 @@
 # Fast Shuffle
 
-[![Version](https://badge.fury.io/js/fast-shuffle.svg)](https://www.npmjs.com/package/
+[![Version](https://badge.fury.io/js/fast-shuffle.svg)](https://www.npmjs.com/package/fast-shuffle)
 ![Tests](https://github.com/philihp/fast-shuffle/workflows/tests/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?b
+[![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?branch=master)](https://coveralls.io/github/philihp/fast-shuffle?branch=master)
 ![License](https://img.shields.io/npm/l/fast-shuffle)
 
 Fast Shuffle is a Fisher-Yates shuffle which relaxes the constraint of
