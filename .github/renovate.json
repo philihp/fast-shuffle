@@ -1,9 +1,3 @@
 {
-  "extends": ["config:base"],
-  "packageRules": [
-    {
-      "depTypeList": ["devDependencies"],
-      "automerge": true
-    }
-  ]
+  "extends": ["@philihp"]
 }
