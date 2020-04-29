@@ -1,6 +1,9 @@
 # Fast Shuffle
 
-![Build Status](https://travis-ci.org/philihp/fast-shuffle.svg?branch=master) [![npm version](https://badge.fury.io/js/fast-shuffle.svg)](https://badge.fury.io/js/fast-shuffle)
+[![Version](https://badge.fury.io/js/fast-shuffle.svg)](https://www.npmjs.com/package/
+![Tests](https://github.com/philihp/fast-shuffle/workflows/tests/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?b
+![License](https://img.shields.io/npm/l/fast-shuffle)
 
 Fast Shuffle is a Fisher-Yates shuffle which relaxes the constraint of
 performing the shuffle in-place, and instead guarantees that the source
@@ -21,9 +24,9 @@ Then call it from your code
 ```js
 import shuffle from 'fast-shuffle'
 
-const suits = ['♣','♦','♥','♠']
-const faces = ['2','3','4','5','6','7','8','9','T','J','Q','K','A']
-const sortedDeck = suits.map(suit => faces.map(face => face + suit))
+const suits = ['♣', '♦', '♥', '♠']
+const faces = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+const sortedDeck = suits.map((suit) => faces.map((face) => face + suit))
 
 const shuffledDeck = shuffle(sortedDeck)
 ```
@@ -60,8 +63,8 @@ to quadratic time.
 
 ## Optimizations
 
-* Don't use splice. Removing elements with splice preserves order, which is
+- Don't use splice. Removing elements with splice preserves order, which is
   very expensive and unnecessary.
-* Avoid repeated pop() and push(). The ultimate size of the output array
+- Avoid repeated pop() and push(). The ultimate size of the output array
   will not change.
-* Avoid Math.floor. Remove fractions with a binary or with zero.
+- Avoid Math.floor. Remove fractions with a binary or with zero.

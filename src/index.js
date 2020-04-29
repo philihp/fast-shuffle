@@ -4,7 +4,7 @@ const shuffle = (deck, random = Math.random) => {
   let dstIndex = 0
   let shuffled = new Array(srcIndex)
 
-  while(srcIndex) {
+  while (srcIndex) {
     let randIndex = (srcIndex * random()) | 0
     shuffled[dstIndex++] = clone[randIndex]
     clone[randIndex] = clone[--srcIndex]
@@ -13,4 +13,4 @@ const shuffle = (deck, random = Math.random) => {
   return shuffled
 }
 
-export default shuffle;
+export default shuffle
