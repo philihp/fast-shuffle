@@ -25,8 +25,8 @@
   "dependencies": {},
   "devDependencies": {
     "@babel/cli": "7.10.1",
-    "@babel/core": "7.10.1",
-    "@babel/preset-env": "7.10.1",
+    "@babel/core": "7.10.2",
+    "@babel/preset-env": "7.10.2",
     "babel-jest": "26.0.1",
     "jest": "26.0.1",
     "jest-nyancat-reporter": "2.0.0"
