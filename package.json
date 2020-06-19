@@ -12,13 +12,20 @@
     "pure"
   ],
   "main": "./dist/index.js",
+  "files": [
+    "/dist/",
+    "!/dist/**/__tests__/*.js"
+  ],
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
-    "prepublish": "babel src/ --out-dir dist"
+    "build": "babel src -d dist",
+    "lint": "eslint .",
+    "prepare": "npm run build",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
@@ -27,9 +34,12 @@
     "@babel/cli": "7.10.3",
     "@babel/core": "7.10.3",
     "@babel/preset-env": "7.10.3",
-    "babel-jest": "26.0.1",
+    "@philihp/eslint-config": "2.0.3",
+    "husky": "4.2.5",
     "jest": "26.0.1",
-    "jest-nyancat-reporter": "2.0.0"
+    "jest-nyancat-reporter": "2.0.0",
+    "lint-staged": "10.2.11",
+    "prettier": "2.0.5"
   },
   "jest": {
     "reporters": [
@@ -41,9 +51,24 @@
       ]
     ]
   },
+  "lint-staged": {
+    "src/**/*.{js,jsx,json}": [
+      "eslint --fix"
+    ]
+  },
   "prettier": {
     "singleQuote": true,
     "semi": false,
     "trailingComma": "es5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "@philihp"
+    ]
   }
 }

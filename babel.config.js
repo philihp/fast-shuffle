@@ -1,3 +1,1 @@
-const presets = ['@babel/env']
-
-module.exports = { presets }
+module.exports = { presets: ['@babel/env'] }
