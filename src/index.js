@@ -1,16 +1,18 @@
-const shuffle = (deck, random = Math.random) => {
-  let clone = deck.slice(0)
-  let srcIndex = deck.length
-  let dstIndex = 0
-  let shuffled = new Array(srcIndex)
+const ruffle = (random) => (deck) => {
+  const clone = deck.slice(0)
+  let sourceIndex = deck.length
+  let destinationIndex = 0
+  const shuffled = new Array(sourceIndex)
 
-  while (srcIndex) {
-    let randIndex = (srcIndex * random()) | 0
-    shuffled[dstIndex++] = clone[randIndex]
-    clone[randIndex] = clone[--srcIndex]
+  while (sourceIndex) {
+    const randomIndex = (sourceIndex * random()) | 0
+    shuffled[destinationIndex++] = clone[randomIndex]
+    clone[randomIndex] = clone[--sourceIndex]
   }
 
   return shuffled
 }
 
-export default shuffle
+export const shuffle = ruffle(Math.random)
+
+export default ruffle

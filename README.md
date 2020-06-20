@@ -5,13 +5,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?branch=master)](https://coveralls.io/github/philihp/fast-shuffle?branch=master)
 ![License](https://img.shields.io/npm/l/fast-shuffle)
 
-Fast Shuffle is a Fisher-Yates shuffle which relaxes the constraint of
-performing the shuffle in-place, and instead guarantees that the source
-array will not be mutated.
-
-The intent is to provide a shuffle with a simple interface for pure function
-Redux reducers. By encouraging stateless code with no side effects, testing
-is easier and we have more confidence in code correctness.
+A fast, side-effect free, dependency-free array shuffle that's safe for functional
+programming, and use within Redux reducers. The parameters are properly curried as
+well, so you can pass it in with Ramda pipes.
 
 ## Usage
 
@@ -22,7 +18,7 @@ npm install --save fast-shuffle
 Then call it from your code
 
 ```js
-import shuffle from 'fast-shuffle'
+import { shuffle } from 'fast-shuffle'
 
 const suits = ['♣', '♦', '♥', '♠']
 const faces = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
@@ -31,11 +27,15 @@ const sortedDeck = suits.map((suit) => faces.map((face) => face + suit))
 const shuffledDeck = shuffle(sortedDeck)
 ```
 
-By giving it a pseudoRNG, you can also safely use it in your redux reducers.
+By giving it a pseudoRNG, you can also safely use it in your redux reducers. You'll need a random float for every element in your array; if you use a twister to generate infinite randomness, you'll have to stick its state somewhere. `Math.random` doesn't allow you to specify a deterministic seed.
 
 ```js
+import fastShuffle from 'fast-shuffle'
 import MersenneTwister from 'mersenne-twister'
-const prng = new MersenneTwister(12345)
+
+const seededRandomizer = new MersenneTwister(12345)
+const noise = new Array(9000).fill().map(() => seededRandomizer.random())
+const shuffle = fastShuffle(() => noise.pop())
 
 const state = {
   deck: sortedDeck
@@ -47,24 +47,38 @@ const state = {
 
 const newState = {
   ...state,
-  deck: shuffle(state.deck, prng.random)
+  deck: shuffle(state.deck)
 }
+```
+
+Since the parameters are curried, it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
+
+```js
+import fastShuffle from 'fast-shuffle'
+
+const randomLetter =
+  // arrayOfLetters :: () -> [a]
+  ['a', 'b', 'c', 'd']
+  // shuffle :: [a] -> [a]
+  |> fastShuffle(Math.random),
+  // head :: [a] -> a
+  |> (array) => array[0]
 ```
 
 ## Why not use existing libraries?
 
-Many libraries do the shuffle in-place, which is a feature of Fisher-Yates
-shuffling. The source array can be cloned, but I like this for the simpler
-interface.
+1. It doesn't mutate your source array, so it's safe for Redux reducers.
 
-Other libraries use Array.splice() to remove the element from the
-array. This causes the runtime of the shuffle to increase from linear
-to quadratic time.
+2. The parameters are curried in [the correct order](https://www.youtube.com/watch?v=m3svKOdZijA), so you can use it within `|>` or Ramda pipes.
+
+3. It's stupid-fast, compared to other libraries.
+
+4. Compatible with any random number generator.
 
 ## Optimizations
 
-- Don't use splice. Removing elements with splice preserves order, which is
-  very expensive and unnecessary.
+- Don't use splice. Removing elements with splice preserves order, and slows
+  the shuffle run to quadratic time.
 - Avoid repeated pop() and push(). The ultimate size of the output array
   will not change.
 - Avoid Math.floor. Remove fractions with a binary or with zero.

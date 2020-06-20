@@ -1,11 +1,17 @@
-import shuffle from '..'
+import MersenneTwister from 'mersenne-twister'
+import { pipe } from 'ramda'
+import fastShuffle, { shuffle } from '..'
 
-describe('shuffle', () => {
+const twister = new MersenneTwister(12345)
+const noise = (length) => new Array(length).fill().map(() => twister.random())
+
+describe('default', () => {
   it('shuffles the array', () => {
     expect.assertions(2)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const pseudoRandomNumbers = [0.19, 0.84, 0.02, 0.29, 0.19, 0.85, 0.11, 0.02]
-    const d2 = shuffle(d1, () => pseudoRandomNumbers.pop())
+
+    const noiseBank = noise(8)
+    const d2 = fastShuffle(() => noiseBank.pop())(d1)
     expect(d2).toStrictEqual(expect.arrayContaining(d1))
     expect(d2).toHaveLength(d1.length)
   })
@@ -13,8 +19,8 @@ describe('shuffle', () => {
   it('does not mutate the source', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const pseudoRandomNumbers = [0.19, 0.84, 0.02, 0.29, 0.19, 0.85, 0.11, 0.02]
-    shuffle(d1, () => pseudoRandomNumbers.pop())
+    const noiseBank = noise(8)
+    fastShuffle(() => noiseBank.pop())(d1)
     expect(d1).toMatchObject(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
   })
 
@@ -25,8 +31,9 @@ describe('shuffle', () => {
       { name: 'Betty', money: 20 },
       { name: 'Cindy', money: 15 },
     ]
-    const pseudoRandomNumbers = [0.19, 0.84, 0.02, 0.29]
-    const d2 = shuffle(d1, () => pseudoRandomNumbers.pop())
+    const noiseBank = noise(4)
+    const pseudoShuffle = fastShuffle(() => noiseBank.pop())
+    const d2 = pseudoShuffle(d1)
     // given the numbers above, should be alice, cindy, betty
     expect(d2[0].name).toBe('Alice')
     expect(d2[0].money).toBe(10)
@@ -38,8 +45,9 @@ describe('shuffle', () => {
   it('can be sorted back into the source array', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].sort()
-    const pseudoRandomNumbers = [0.19, 0.84, 0.02, 0.29, 0.19, 0.85, 0.11, 0.02]
-    const d2 = shuffle(d1, () => pseudoRandomNumbers.pop())
+    const noiseBank = noise(8)
+    const pseudoShuffle = fastShuffle(() => noiseBank.pop())
+    const d2 = pseudoShuffle(d1)
     const d3 = d2.sort()
     expect(d3).toMatchObject(d1)
   })
@@ -48,14 +56,26 @@ describe('shuffle', () => {
     expect.assertions(1)
     const d = new Array(10000)
     const rng = jest.fn()
-    shuffle(d, rng)
+    fastShuffle(rng)(d)
     expect(rng).toHaveBeenCalledTimes(d.length)
   })
+})
 
+describe('shuffle', () => {
   it('works with massive noise', () => {
     expect.assertions(1)
     const d1 = new Array(500000).fill().map((_, i) => i)
     const d2 = shuffle(d1)
     expect(d1.sort()).toMatchObject(d2.sort())
+  })
+
+  it('can be piped', () => {
+    expect.assertions(1)
+    const letters = () => ['a', 'b', 'c', 'd']
+    const noiseBank = noise(8)
+    const randomShuffle = fastShuffle(() => noiseBank.pop())
+    const head = (array) => array?.[0]
+    const drawCard = pipe(letters, randomShuffle, head)
+    expect(drawCard()).toBe('c')
   })
 })
