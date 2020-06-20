@@ -45,7 +45,7 @@
     "lint-staged": "10.2.11",
     "mersenne-twister": "1.1.0",
     "prettier": "2.0.5",
-    "ramda": "^0.27.0"
+    "ramda": "0.27.0"
   },
   "jest": {
     "reporters": [
