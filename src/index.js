@@ -8,11 +8,11 @@ const randomFunction = (random) => {
   return () => Randomizer.random()
 }
 
-const ruffle = (randomSeed) => {
+const ruffle = (randomSeed, deck) => {
   const random = randomFunction(randomSeed)
-  return (deck) => {
-    const clone = deck.slice(0)
-    let sourceIndex = deck.length
+  const shuffler = (sourceArray) => {
+    const clone = sourceArray.slice(0)
+    let sourceIndex = sourceArray.length
     let destinationIndex = 0
     const shuffled = new Array(sourceIndex)
 
@@ -24,6 +24,8 @@ const ruffle = (randomSeed) => {
 
     return shuffled
   }
+  if (deck === undefined) return shuffler
+  return shuffler(deck)
 }
 
 export const shuffle = ruffle(Math.random)

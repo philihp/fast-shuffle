@@ -86,6 +86,32 @@ describe('default', () => {
     const d2 = pseudoShuffle(d1)
     expect(d1).not.toStrictEqual(d2)
   })
+
+  it('also, rather than curried, accepts a function and the source array', () => {
+    expect.assertions(1)
+    const noise = [
+      0.8901547130662948,
+      0.3163755603600294,
+      0.1307072939816823,
+      0.1839188123121576,
+      0.0397594964593742,
+      0.2045602793853012,
+      0.8264361317269504,
+      0.5677250262815505,
+      0.5320779164321721,
+      0.5955447026062757,
+    ]
+    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const d2 = fastShuffle(() => noise.pop(), d1)
+    expect(d2).toStrictEqual(['E', 'D', 'G', 'H', 'A', 'F', 'C', 'B'])
+  })
+
+  it('also, rather than curried, accepts a seed and the source array', () => {
+    expect.assertions(1)
+    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const d2 = fastShuffle(12345, d1)
+    expect(d2).toStrictEqual(['H', 'G', 'B', 'A', 'E', 'D', 'C', 'F'])
+  })
 })
 
 describe('shuffle', () => {

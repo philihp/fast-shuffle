@@ -55,7 +55,7 @@ import MersenneTwister from 'mersenne-twister'
 
 const initialState = {
   ...
-  tSeed: new MersenneTwister(Math.random() * Date.now()).random_int(),
+  transitiveSeed: new MersenneTwister(Math.random() * Date.now()).random_int(),
   deck: ['♣', '♦', '♥', '♠']
 }
 
@@ -65,8 +65,8 @@ const dealerApp = (state = initialState, action) => {
     case SHUFFLE_DECK:
       return {
         ...state,
-        tSeed: new MersenneTwister(state.tSeed).random_int(),
-        deck: fastShuffle(state.tSeed)(state.deck)
+        transitiveSeed: new MersenneTwister(state.transitiveSeed).random_int(),
+        deck: fastShuffle(state.transitiveSeed, state.deck)
       }
     ...
     default:
