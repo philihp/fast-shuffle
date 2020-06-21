@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?branch=master)](https://coveralls.io/github/philihp/fast-shuffle?branch=master)
 ![License](https://img.shields.io/npm/l/fast-shuffle)
 
-A fast, side-effect free, dependency-free array shuffle that's safe for functional
+A fast and side-effect free array shuffle that's safe for functional
 programming, and use within Redux reducers. The parameters are properly curried as
 well, so you can pass it in with Ramda pipes.
 
