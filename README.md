@@ -15,48 +15,76 @@ well, so you can pass it in with Ramda pipes.
 npm install --save fast-shuffle
 ```
 
-Then call it from your code
-
 ```js
 import { shuffle } from 'fast-shuffle'
 
 const suits = ['♣', '♦', '♥', '♠']
 const faces = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
-const sortedDeck = suits.map((suit) => faces.map((face) => face + suit))
+const sortedDeck = suits.map((suit) => faces.map((face) => face + suit)).flat()
+// [ '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', ...
 
 const shuffledDeck = shuffle(sortedDeck)
+// [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
-The default export allows you to specify your own random seed, which makes it deterministic and safe for use in redux reducers. `Math.random` doesn't allow you to specify a deterministic seed, but this uses its own built-in Mersenne-Twister RNG. If you had your own source of entropy, you can give that as a function as well.
+The shuffle export uses `Math.random` for entropy. You can use the default
+export and specify your own seed, which makes it deterministic pure function.
 
 ```js
 import fastShuffle from 'fast-shuffle'
 
-const shuffle = fastShuffle(12345)
+const letters = ['a', 'b', 'c', 'd', 'e']
+let pseudoShuffle = fastShuffle(12345)
 
-const state = {
-  deck: sortedDeck
-  bet: 100,
-  dealer: []
-  player: []
+pseudoShuffle(letters) // [ 'e', 'd', 'a', 'c', 'b' ]
+pseudoShuffle(letters) // [ 'a', 'e', 'c', 'b', 'd' ]
+
+pseudoShuffle = fastShuffle(12345)
+pseudoShuffle(letters) // [ 'e', 'd', 'a', 'c', 'b' ]
+pseudoShuffle(letters) // [ 'a', 'e', 'c', 'b', 'd' ]
+```
+
+For [performance reasons](https://redux.js.org/faq/performance), it doesn't mutate the original array. Instead, it returns a shallow copy so downstream your React components will know not
+to rerender themselves. Since it's a pure function and does not mutate the input, you can use
+it in your Redux reducers.
+
+```js
+import { SHUFFLE_DECK } from './actions'
+import fastShuffle from 'fast-shuffle'
+import MersenneTwister from 'mersenne-twister'
+
+const initialState = {
   ...
+  tSeed: new MersenneTwister(Math.random() * Date.now()).random_int(),
+  deck: ['♣', '♦', '♥', '♠']
 }
 
-const newState = {
-  ...state,
-  deck: shuffle(state.deck)
+const dealerApp = (state = initialState, action) => {
+  switch (action.type) {
+    ...
+    case SHUFFLE_DECK:
+      return {
+        ...state,
+        tSeed: new MersenneTwister(state.tSeed).random_int(),
+        deck: fastShuffle(state.tSeed)(state.deck)
+      }
+    ...
+    default:
+      return state
+  }
 }
 ```
 
-Since the parameters are curried, it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
+The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
 
 ```js
 import fastShuffle from 'fast-shuffle'
 
-const randomLetter =
-  ['a', 'b', 'c', 'd']             // :: () -> [a]
+const randomCapitalLetter =
+  ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
   |> fastShuffle(Math.random),     // :: [a] -> [a]
-  |> (array) => array[0]           // :: [a] -> a
+  |> _ => _[0]                     // :: [a] -> a
+  |> _ => _.toUpperCase()          // :: a -> a
 ```
 
 ## Why not use existing libraries?
