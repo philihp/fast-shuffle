@@ -38,7 +38,7 @@
     "@babel/cli": "7.10.3",
     "@babel/core": "7.10.3",
     "@babel/preset-env": "7.10.3",
-    "@philihp/eslint-config": "2.0.3",
+    "@philihp/eslint-config": "2.1.0",
     "husky": "4.2.5",
     "jest": "26.0.1",
     "jest-nyancat-reporter": "2.0.0",
