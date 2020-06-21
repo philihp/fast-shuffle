@@ -27,15 +27,12 @@ const sortedDeck = suits.map((suit) => faces.map((face) => face + suit))
 const shuffledDeck = shuffle(sortedDeck)
 ```
 
-By giving it a pseudoRNG, you can also safely use it in your redux reducers. You'll need a random float for every element in your array; if you use a twister to generate infinite randomness, you'll have to stick its state somewhere. `Math.random` doesn't allow you to specify a deterministic seed.
+The default export allows you to specify your own random seed, which makes it deterministic and safe for use in redux reducers. `Math.random` doesn't allow you to specify a deterministic seed, but this uses its own built-in Mersenne-Twister RNG. If you had your own source of entropy, you can give that as a function as well.
 
 ```js
 import fastShuffle from 'fast-shuffle'
-import MersenneTwister from 'mersenne-twister'
 
-const seededRandomizer = new MersenneTwister(12345)
-const noise = new Array(9000).fill().map(() => seededRandomizer.random())
-const shuffle = fastShuffle(() => noise.pop())
+const shuffle = fastShuffle(12345)
 
 const state = {
   deck: sortedDeck
@@ -57,12 +54,9 @@ Since the parameters are curried, it can be used in [pipelines](https://github.c
 import fastShuffle from 'fast-shuffle'
 
 const randomLetter =
-  // arrayOfLetters :: () -> [a]
-  ['a', 'b', 'c', 'd']
-  // shuffle :: [a] -> [a]
-  |> fastShuffle(Math.random),
-  // head :: [a] -> a
-  |> (array) => array[0]
+  ['a', 'b', 'c', 'd']             // :: () -> [a]
+  |> fastShuffle(Math.random),     // :: [a] -> [a]
+  |> (array) => array[0]           // :: [a] -> a
 ```
 
 ## Why not use existing libraries?
@@ -71,9 +65,9 @@ const randomLetter =
 
 2. The parameters are curried in [the correct order](https://www.youtube.com/watch?v=m3svKOdZijA), so you can use it within `|>` or Ramda pipes.
 
-3. It's stupid-fast, compared to other libraries.
+3. It's stupid-fast and scales to large arrays without breaking a sweat.
 
-4. Compatible with any random number generator.
+4. You can BYO-RNG.
 
 ## Optimizations
 

@@ -1,14 +1,15 @@
 import MersenneTwister from 'mersenne-twister'
 
-const ruffle = (randomSeed) => {
-  let Randomizer
-  let random
-  if (typeof randomSeed === 'function') {
-    random = () => randomSeed()
-  } else {
-    Randomizer = new MersenneTwister(randomSeed)
-    random = () => Randomizer.random()
+const randomFunction = (random) => {
+  if (typeof random === 'function') {
+    return random
   }
+  const Randomizer = new MersenneTwister(random)
+  return () => Randomizer.random()
+}
+
+const ruffle = (randomSeed) => {
+  const random = randomFunction(randomSeed)
   return (deck) => {
     const clone = deck.slice(0)
     let sourceIndex = deck.length
