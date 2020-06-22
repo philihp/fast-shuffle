@@ -1,11 +1,15 @@
-import MersenneTwister from 'mersenne-twister'
+import { randNext, newRandGen } from 'fn-mt'
 
 const randomFunction = (random) => {
   if (typeof random === 'function') {
     return random
   }
-  const Randomizer = new MersenneTwister(random)
-  return () => Randomizer.random()
+  let randState = newRandGen(random)
+  return () => {
+    const [nextInt, nextState] = randNext(randState)
+    randState = nextState
+    return nextInt / 2 ** 32
+  }
 }
 
 const ruffle = (randomSeed, deck) => {

@@ -96,11 +96,3 @@ const randomCapitalLetter =
 3. It's stupid-fast and scales to large arrays without breaking a sweat.
 
 4. You can BYO-RNG.
-
-## Optimizations
-
-- Don't use splice. Removing elements with splice preserves order, and slows
-  the shuffle run to quadratic time.
-- Avoid repeated pop() and push(). The ultimate size of the output array
-  will not change.
-- Avoid Math.floor. Remove fractions with a binary or with zero.

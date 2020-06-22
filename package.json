@@ -34,7 +34,7 @@
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "mersenne-twister": "1.1.0"
+    "fn-mt": "1.2.1"
   },
   "devDependencies": {
     "@babel/cli": "7.10.3",

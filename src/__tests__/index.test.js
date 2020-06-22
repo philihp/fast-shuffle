@@ -30,8 +30,8 @@ describe('default', () => {
     const d2 = pseudoShuffle(d1)
     expect(d2).toStrictEqual([
       { name: 'Cindy', money: 15 },
-      { name: 'Betty', money: 20 },
       { name: 'Alice', money: 10 },
+      { name: 'Betty', money: 20 },
     ])
     d2[0].money = 40
     expect(d1).toStrictEqual([
@@ -110,7 +110,7 @@ describe('default', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const d2 = fastShuffle(12345, d1)
-    expect(d2).toStrictEqual(['H', 'G', 'B', 'A', 'E', 'D', 'C', 'F'])
+    expect(d2).toStrictEqual(['G', 'A', 'F', 'D', 'B', 'E', 'H', 'C'])
   })
 })
 
