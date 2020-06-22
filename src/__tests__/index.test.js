@@ -20,7 +20,7 @@ describe('default', () => {
   })
 
   it('does a shallow clone', () => {
-    expect.assertions(2)
+    expect.assertions(3)
     const pseudoShuffle = fastShuffle(12345)
     const d1 = [
       { name: 'Alice', money: 10 },
@@ -28,17 +28,10 @@ describe('default', () => {
       { name: 'Cindy', money: 15 },
     ]
     const d2 = pseudoShuffle(d1)
-    expect(d2).toStrictEqual([
-      { name: 'Cindy', money: 15 },
-      { name: 'Alice', money: 10 },
-      { name: 'Betty', money: 20 },
-    ])
-    d2[0].money = 40
-    expect(d1).toStrictEqual([
-      { name: 'Alice', money: 10 },
-      { name: 'Betty', money: 20 },
-      { name: 'Cindy', money: 40 },
-    ])
+    // toBe tests identity, not deep equality
+    expect(d2).toContain(d1[0])
+    expect(d2).toContain(d1[1])
+    expect(d2).toContain(d1[2])
   })
 
   it('can be sorted back into the source array', () => {
@@ -64,7 +57,7 @@ describe('default', () => {
     const letters = () => ['a', 'b', 'c', 'd']
     const head = (array) => array?.[0]
     const drawCard = pipe(letters, pseudoShuffle, head)
-    expect(drawCard()).toBe('d')
+    expect(drawCard()).toBe('b')
   })
 
   it('accepts a custom random function', () => {
@@ -132,7 +125,7 @@ describe('default', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const d2 = fastShuffle(12345, d1)
-    expect(d2).toStrictEqual(['G', 'A', 'F', 'D', 'B', 'E', 'H', 'C'])
+    expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
   })
 })
 

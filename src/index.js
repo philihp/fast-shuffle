@@ -1,4 +1,4 @@
-import { newRandGen, randNext } from 'fn-mt'
+import { newRandGen, randRange } from 'fn-mt'
 
 const randomFunction = (random) => {
   if (typeof random === 'function') {
@@ -12,9 +12,9 @@ const randomFunction = (random) => {
   }
   let randState = newRandGen(random)
   return (maxIndex) => {
-    const [nextInt, nextState] = randNext(randState)
+    const [nextInt, nextState] = randRange(0, maxIndex, randState)
     randState = nextState
-    return ((nextInt / 2 ** 32) * maxIndex) | 0
+    return nextInt
   }
 }
 
