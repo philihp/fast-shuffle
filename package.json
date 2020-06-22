@@ -50,14 +50,6 @@
   "jest": {
     "modulePathIgnorePatterns": [
       "dist/"
-    ],
-    "reporters": [
-      [
-        "jest-nyancat-reporter",
-        {
-          "suppressErrorReporter": false
-        }
-      ]
     ]
   },
   "lint-staged": {

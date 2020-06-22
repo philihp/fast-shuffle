@@ -87,8 +87,8 @@ describe('default', () => {
     expect(d1).not.toStrictEqual(d2)
   })
 
-  it('also, rather than curried, accepts a function and the source array', () => {
-    expect.assertions(1)
+  it('accepts a custom random function that gives floats (0..1)', () => {
+    expect.assertions(2)
     const noise = [
       0.8901547130662948,
       0.3163755603600294,
@@ -101,9 +101,31 @@ describe('default', () => {
       0.5320779164321721,
       0.5955447026062757,
     ]
+    const pseudoShuffle = fastShuffle(() => noise.pop())
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const d2 = fastShuffle(() => noise.pop(), d1)
-    expect(d2).toStrictEqual(['E', 'D', 'G', 'H', 'A', 'F', 'C', 'B'])
+    const d2 = pseudoShuffle(d1)
+    expect(d1).not.toStrictEqual(d2)
+    expect(d1.sort()).toStrictEqual(d2.sort())
+  })
+
+  it('accepts random function that gives ints', () => {
+    expect.assertions(2)
+    const noise = [
+      3319549465,
+      2740305749,
+      3900900665,
+      3358524577,
+      2094225545,
+      1681473165,
+      1218673763,
+      3934276843,
+      1762424506,
+    ]
+    const pseudoShuffle = fastShuffle(() => noise.pop())
+    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const d2 = pseudoShuffle(d1)
+    expect(d1).not.toStrictEqual(d2)
+    expect(d1.sort()).toStrictEqual(d2.sort())
   })
 
   it('also, rather than curried, accepts a seed and the source array', () => {
@@ -117,7 +139,7 @@ describe('default', () => {
 describe('shuffle', () => {
   it('works with massive noise', () => {
     expect.assertions(1)
-    const d1 = new Array(500000).fill().map((_, i) => i)
+    const d1 = new Array(500).fill().map((_, i) => i)
     const d2 = shuffle(d1)
     expect(d1.sort()).toMatchObject(d2.sort())
   })
