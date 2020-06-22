@@ -1,15 +1,15 @@
 import { newRandGen, randRange } from 'fn-mt'
 
-const randomFunction = (random) => {
-  if (typeof random === 'function') {
-    return (maxIndex) => {
-      const nextNumber = random()
-      if (Number.isInteger(nextNumber)) {
-        return ((nextNumber / 2 ** 32) * maxIndex) | 0
-      }
-      return (nextNumber * maxIndex) | 0
-    }
+const randomFunction = (random) => (maxIndex) => {
+  const nextNumber = random()
+  if (Number.isInteger(nextNumber)) {
+    return ((nextNumber / 2 ** 32) * maxIndex) | 0
   }
+  return (nextNumber * maxIndex) | 0
+}
+
+const randomGenerator = (random) => {
+  if (typeof random === 'function') return randomFunction(random)
   let randState = newRandGen(random)
   return (maxIndex) => {
     const [nextInt, nextState] = randRange(0, maxIndex, randState)
@@ -19,7 +19,7 @@ const randomFunction = (random) => {
 }
 
 const ruffle = (randomSeed, deck) => {
-  const random = randomFunction(randomSeed)
+  const random = randomGenerator(randomSeed)
   const shuffler = (sourceArray) => {
     const clone = sourceArray.slice(0)
     let sourceIndex = sourceArray.length
