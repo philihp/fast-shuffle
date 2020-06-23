@@ -1,5 +1,4 @@
 import { pipe } from 'ramda'
-import { newRandGen } from 'fn-mt'
 import fastShuffle, { shuffle } from '..'
 
 describe('default', () => {
@@ -123,7 +122,7 @@ describe('fastShuffle for reducers', () => {
     expect.assertions(2)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const [d2, seedState] = fastShuffle([d1, 12345])
-    expect(seedState).toBeInstanceOf(Object)
+    expect(seedState).not.toBeUndefined()
     expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
   })
 
@@ -134,17 +133,6 @@ describe('fastShuffle for reducers', () => {
     const [d2] = fastShuffle([s1, 67890])
     expect(d1).not.toStrictEqual(d2)
     expect(d1.sort()).toStrictEqual(d2.sort())
-  })
-
-  it('accepts [array, object]', () => {
-    expect.assertions(4)
-    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const oldState = newRandGen(12345)
-    const [d2, newState] = fastShuffle([d1, oldState])
-    expect(oldState).toBeInstanceOf(Object)
-    expect(newState).toBeInstanceOf(Object)
-    expect(oldState).not.toStrictEqual(newState)
-    expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
   })
 
   it('finds its own seed, if not given one', () => {
