@@ -1,7 +1,7 @@
 import { newRandGen, randRange } from 'fn-mt'
 
 /**
- * This is the basic algorithm. Random should be a function that when given
+ * This is the algorithm. Random should be a function that when given
  * an integer, returns an integer 0..n; basically "give me a random index for
  * my array. I have a hunch most of the time we will just get a seed, and should
  * generate our own random function. Unfortunately Javascript does not let us
@@ -22,6 +22,8 @@ const fisherYatesShuffle = (random) => (sourceArray) => {
   return shuffled
 }
 
+const randomInt = () => (Math.random() * 2 ** 32) | 0
+
 const randomExternal = (random) => (maxIndex) =>
   ((random() / 2 ** 32) * maxIndex) | 0
 
@@ -34,10 +36,8 @@ const randomInternal = (random) => {
   }
 }
 
-const makeRandom = (random) => {
-  if (typeof random === 'function') return randomExternal(random)
-  return randomInternal(random)
-}
+const randomSwitch = (random) =>
+  (typeof random === 'function' ? randomExternal : randomInternal)(random)
 
 const functionalShuffle = (deck, state) => {
   let randState = typeof state !== 'object' ? newRandGen(state) : state
@@ -52,10 +52,10 @@ const functionalShuffle = (deck, state) => {
 const fastShuffle = (randomSeed, deck) => {
   // if the first param is an object, assume it's a randomizer's state from a previous run
   if (typeof randomSeed === 'object') {
-    const [fnDeck, fnState] = randomSeed
+    const [fnDeck, fnState = randomInt()] = randomSeed
     return functionalShuffle(fnDeck, fnState)
   }
-  const random = makeRandom(randomSeed)
+  const random = randomSwitch(randomSeed)
   const shuffler = fisherYatesShuffle(random)
   // if no second param given, return a curried shuffler
   if (deck === undefined) return shuffler
