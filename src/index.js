@@ -1,11 +1,10 @@
-import { newRandGen, randRange } from 'fn-mt'
+import { newRandGen, randNext, randRange } from 'fn-mt'
 
 /**
  * This is the algorithm. Random should be a function that when given
- * an integer, returns an integer 0..n; basically "give me a random index for
- * my array. I have a hunch most of the time we will just get a seed, and should
- * generate our own random function. Unfortunately Javascript does not let us
- * seed the Math.random randomizer, so this uses fn-mt.
+ * an integer, returns an integer 0..n. I have a hunch most of the time
+ * we will just get a seed, but if you're reading this please tell me
+ * if you ever send in your own randomizer :)
  */
 const fisherYatesShuffle = (random) => (sourceArray) => {
   const clone = sourceArray.slice(0)
@@ -40,17 +39,16 @@ const randomSwitch = (random) =>
   (typeof random === 'function' ? randomExternal : randomInternal)(random)
 
 const functionalShuffle = (deck, state) => {
-  let randState = typeof state !== 'object' ? newRandGen(state) : state
+  let randState = newRandGen(state)
   const random = (maxIndex) => {
     const [nextInt, nextState] = randRange(0, maxIndex, randState)
     randState = nextState
     return nextInt
   }
-  return [fisherYatesShuffle(random)(deck), randState]
+  return [fisherYatesShuffle(random)(deck), randNext(randState)[0]]
 }
 
 const fastShuffle = (randomSeed, deck) => {
-  // if the first param is an object, assume it's a randomizer's state from a previous run
   if (typeof randomSeed === 'object') {
     const [fnDeck, fnState = randomInt()] = randomSeed
     return functionalShuffle(fnDeck, fnState)

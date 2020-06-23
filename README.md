@@ -25,23 +25,38 @@ const shuffledDeck = shuffle(sortedDeck)
 // [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
-The named shuffle export, above, uses `Math.random` for entropy. If you import it without the brackets, you'll get a functionally pure shuffler, which you can give it an integer
+The named `shuffle` export seen above uses `Math.random` for entropy. If you import it without the brackets, you'll get a deterministic shuffler which takes a number for its random seed (e.g. `Date.now()`).
 
 ```js
 import shuffle from 'fast-shuffle'
 
 const letters = ['a', 'b', 'c', 'd', 'e']
-let pseudoShuffle = shuffle(12345)
+const shuffleRed = shuffle(12345)
+shuffleRed(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
+shuffleRed(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
+shuffleRed(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
+shuffleRed(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
 
-pseudoShuffle(letters) // [ 'e', 'd', 'a', 'c', 'b' ]
-pseudoShuffle(letters) // [ 'a', 'e', 'c', 'b', 'd' ]
-
-pseudoShuffle = shuffle(12345)
-pseudoShuffle(letters) // [ 'e', 'd', 'a', 'c', 'b' ]
-pseudoShuffle(letters) // [ 'a', 'e', 'c', 'b', 'd' ]
+const shuffleBlue = shuffle(12345)
+shuffleBlue(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
+shuffleBlue(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
+shuffleBlue(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
+shuffleBlue(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
 ```
 
-It doesn't mutate the original array, instead it gives you back a shallow copy, which is important for Redux/React and [performance reasons](https://redux.js.org/faq/performance).
+The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
+
+```js
+import shuffle from 'fast-shuffle'
+
+const randomCapitalLetter =
+  ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
+  |> shuffle(Math.random),         // :: [a] -> [a]
+  |> _ => _[0]                     // :: [a] -> a
+  |> _ => _.toUpperCase()          // :: a -> a
+```
+
+If you give it an array of your array and a random seed, you'll get a shuffled array and a new random seed back. This is a pure function, so you can use it in your Redux reducers.
 
 ```js
 import { SHUFFLE_DECK } from './actions'
@@ -70,17 +85,7 @@ const dealerApp = (state = initialState, action) => {
 }
 ```
 
-The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
-
-```js
-import shuffle from 'fast-shuffle'
-
-const randomCapitalLetter =
-  ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
-  |> shuffle(Math.random),     // :: [a] -> [a]
-  |> _ => _[0]                     // :: [a] -> a
-  |> _ => _.toUpperCase()          // :: a -> a
-```
+Shuffle doesn't mutate the original array, instead it gives you back a shallow copy. This is important for React and [performance reasons](https://redux.js.org/faq/performance).
 
 ## Why not use existing libraries?
 
