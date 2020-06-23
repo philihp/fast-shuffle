@@ -1,33 +1,67 @@
-import MersenneTwister from 'mersenne-twister'
+import { newRandGen, randRange } from 'fn-mt'
 
-const randomFunction = (random) => {
-  if (typeof random === 'function') {
-    return random
+/**
+ * This is the algorithm. Random should be a function that when given
+ * an integer, returns an integer 0..n; basically "give me a random index for
+ * my array. I have a hunch most of the time we will just get a seed, and should
+ * generate our own random function. Unfortunately Javascript does not let us
+ * seed the Math.random randomizer, so this uses fn-mt.
+ */
+const fisherYatesShuffle = (random) => (sourceArray) => {
+  const clone = sourceArray.slice(0)
+  let sourceIndex = sourceArray.length
+  let destinationIndex = 0
+  const shuffled = new Array(sourceIndex)
+
+  while (sourceIndex) {
+    const randomIndex = random(sourceIndex)
+    shuffled[destinationIndex++] = clone[randomIndex]
+    clone[randomIndex] = clone[--sourceIndex]
   }
-  const Randomizer = new MersenneTwister(random)
-  return () => Randomizer.random()
+
+  return shuffled
 }
 
-const ruffle = (randomSeed, deck) => {
-  const random = randomFunction(randomSeed)
-  const shuffler = (sourceArray) => {
-    const clone = sourceArray.slice(0)
-    let sourceIndex = sourceArray.length
-    let destinationIndex = 0
-    const shuffled = new Array(sourceIndex)
+const randomInt = () => (Math.random() * 2 ** 32) | 0
 
-    while (sourceIndex) {
-      const randomIndex = (sourceIndex * random()) | 0
-      shuffled[destinationIndex++] = clone[randomIndex]
-      clone[randomIndex] = clone[--sourceIndex]
-    }
+const randomExternal = (random) => (maxIndex) =>
+  ((random() / 2 ** 32) * maxIndex) | 0
 
-    return shuffled
+const randomInternal = (random) => {
+  let randState = newRandGen(random)
+  return (maxIndex) => {
+    const [nextInt, nextState] = randRange(0, maxIndex, randState)
+    randState = nextState
+    return nextInt
   }
+}
+
+const randomSwitch = (random) =>
+  (typeof random === 'function' ? randomExternal : randomInternal)(random)
+
+const functionalShuffle = (deck, state) => {
+  let randState = typeof state !== 'object' ? newRandGen(state) : state
+  const random = (maxIndex) => {
+    const [nextInt, nextState] = randRange(0, maxIndex, randState)
+    randState = nextState
+    return nextInt
+  }
+  return [fisherYatesShuffle(random)(deck), randState]
+}
+
+const fastShuffle = (randomSeed, deck) => {
+  // if the first param is an object, assume it's a randomizer's state from a previous run
+  if (typeof randomSeed === 'object') {
+    const [fnDeck, fnState = randomInt()] = randomSeed
+    return functionalShuffle(fnDeck, fnState)
+  }
+  const random = randomSwitch(randomSeed)
+  const shuffler = fisherYatesShuffle(random)
+  // if no second param given, return a curried shuffler
   if (deck === undefined) return shuffler
   return shuffler(deck)
 }
 
-export const shuffle = ruffle(Math.random)
+export const shuffle = fastShuffle(Math.random)
 
-export default ruffle
+export default fastShuffle
