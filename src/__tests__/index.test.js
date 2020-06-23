@@ -1,4 +1,5 @@
 import { pipe } from 'ramda'
+import { newRandGen } from 'fn-mt'
 import fastShuffle, { shuffle } from '..'
 
 describe('default', () => {
@@ -28,7 +29,6 @@ describe('default', () => {
       { name: 'Cindy', money: 15 },
     ]
     const d2 = pseudoShuffle(d1)
-    // toBe tests identity, not deep equality
     expect(d2).toContain(d1[0])
     expect(d2).toContain(d1[1])
     expect(d2).toContain(d1[2])
@@ -51,7 +51,7 @@ describe('default', () => {
     expect(rng).toHaveBeenCalledTimes(d.length)
   })
 
-  it('can be piped', () => {
+  it('can be piped as a curried function', () => {
     expect.assertions(1)
     const pseudoShuffle = fastShuffle(12345)
     const letters = () => ['a', 'b', 'c', 'd']
@@ -101,26 +101,6 @@ describe('default', () => {
     expect(d1.sort()).toStrictEqual(d2.sort())
   })
 
-  it('accepts random function that gives ints', () => {
-    expect.assertions(2)
-    const noise = [
-      3319549465,
-      2740305749,
-      3900900665,
-      3358524577,
-      2094225545,
-      1681473165,
-      1218673763,
-      3934276843,
-      1762424506,
-    ]
-    const pseudoShuffle = fastShuffle(() => noise.pop())
-    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const d2 = pseudoShuffle(d1)
-    expect(d1).not.toStrictEqual(d2)
-    expect(d1.sort()).toStrictEqual(d2.sort())
-  })
-
   it('also, rather than curried, accepts a seed and the source array', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
@@ -135,5 +115,42 @@ describe('shuffle', () => {
     const d1 = new Array(500).fill().map((_, i) => i)
     const d2 = shuffle(d1)
     expect(d1.sort()).toMatchObject(d2.sort())
+  })
+})
+
+describe('fastShuffle for reducers', () => {
+  it('accepts [array, number]', () => {
+    expect.assertions(2)
+    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const [d2, seedState] = fastShuffle([d1, 12345])
+    expect(seedState).toBeInstanceOf(Object)
+    expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
+  })
+
+  it('returns different arrays with different seed ints', () => {
+    expect.assertions(2)
+    const s1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const [d1] = fastShuffle([s1, 12345])
+    const [d2] = fastShuffle([s1, 67890])
+    expect(d1).not.toStrictEqual(d2)
+    expect(d1.sort()).toStrictEqual(d2.sort())
+  })
+
+  it('accepts [array, object]', () => {
+    expect.assertions(4)
+    const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const oldState = newRandGen(12345)
+    const [d2, newState] = fastShuffle([d1, oldState])
+    expect(oldState).toBeInstanceOf(Object)
+    expect(newState).toBeInstanceOf(Object)
+    expect(oldState).not.toStrictEqual(newState)
+    expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
+  })
+
+  it('finds its own seed, if not given one', () => {
+    expect.assertions(1)
+    const s1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const [d1] = fastShuffle([s1, undefined])
+    expect(s1.every((r) => d1.includes(r))).toBe(true)
   })
 })

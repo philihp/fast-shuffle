@@ -5,9 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?branch=master)](https://coveralls.io/github/philihp/fast-shuffle?branch=master)
 ![License](https://img.shields.io/npm/l/fast-shuffle)
 
-A fast and side-effect free array shuffle that's safe for functional
-programming, and use within Redux reducers. The parameters are properly curried as
-well, so you can pass it in with Ramda pipes.
+A fast and side-effect free array shuffle that's safe for functional programming, and use within Redux reducers.
 
 ## Usage
 
@@ -27,35 +25,31 @@ const shuffledDeck = shuffle(sortedDeck)
 // [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
-The shuffle export uses `Math.random` for entropy. You can use the default
-export and specify your own seed, which makes it deterministic pure function.
+The named shuffle export, above, uses `Math.random` for entropy. If you import it without the brackets, you'll get a functionally pure shuffler, which you can give it an integer
 
 ```js
-import fastShuffle from 'fast-shuffle'
+import shuffle from 'fast-shuffle'
 
 const letters = ['a', 'b', 'c', 'd', 'e']
-let pseudoShuffle = fastShuffle(12345)
+let pseudoShuffle = shuffle(12345)
 
 pseudoShuffle(letters) // [ 'e', 'd', 'a', 'c', 'b' ]
 pseudoShuffle(letters) // [ 'a', 'e', 'c', 'b', 'd' ]
 
-pseudoShuffle = fastShuffle(12345)
+pseudoShuffle = shuffle(12345)
 pseudoShuffle(letters) // [ 'e', 'd', 'a', 'c', 'b' ]
 pseudoShuffle(letters) // [ 'a', 'e', 'c', 'b', 'd' ]
 ```
 
-For [performance reasons](https://redux.js.org/faq/performance), it doesn't mutate the original array. Instead, it returns a shallow copy so downstream your React components will know not
-to rerender themselves. Since it's a pure function and does not mutate the input, you can use
-it in your Redux reducers.
+It doesn't mutate the original array, instead it gives you back a shallow copy, which is important for Redux/React and [performance reasons](https://redux.js.org/faq/performance).
 
 ```js
 import { SHUFFLE_DECK } from './actions'
-import fastShuffle from 'fast-shuffle'
-import MersenneTwister from 'mersenne-twister'
+import shuffle from 'fast-shuffle'
 
 const initialState = {
   ...
-  transitiveSeed: new MersenneTwister(Math.random() * Date.now()).random_int(),
+  randomizer: Date.now(),
   deck: ['♣', '♦', '♥', '♠']
 }
 
@@ -63,10 +57,11 @@ const dealerApp = (state = initialState, action) => {
   switch (action.type) {
     ...
     case SHUFFLE_DECK:
+      const [ deck, randomizer ] = shuffle([state.deck, state.randomizer])
       return {
         ...state,
-        transitiveSeed: new MersenneTwister(state.transitiveSeed).random_int(),
-        deck: fastShuffle(state.transitiveSeed, state.deck)
+        randomizer,
+        deck
       }
     ...
     default:
@@ -78,11 +73,11 @@ const dealerApp = (state = initialState, action) => {
 The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
 
 ```js
-import fastShuffle from 'fast-shuffle'
+import shuffle from 'fast-shuffle'
 
 const randomCapitalLetter =
   ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
-  |> fastShuffle(Math.random),     // :: [a] -> [a]
+  |> shuffle(Math.random),     // :: [a] -> [a]
   |> _ => _[0]                     // :: [a] -> a
   |> _ => _.toUpperCase()          // :: a -> a
 ```
