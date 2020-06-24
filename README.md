@@ -64,8 +64,8 @@ import shuffle from 'fast-shuffle'
 
 const initialState = {
   ...
-  randomizer: Date.now(),
-  deck: ['♣', '♦', '♥', '♠']
+  deck: ['♣', '♦', '♥', '♠'],
+  randomizer: Date.now()
 }
 
 const dealerApp = (state = initialState, action) => {
