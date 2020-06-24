@@ -75,8 +75,8 @@ const dealerApp = (state = initialState, action) => {
       const [ deck, randomizer ] = shuffle([state.deck, state.randomizer])
       return {
         ...state,
+        deck,
         randomizer,
-        deck
       }
     ...
     default:
