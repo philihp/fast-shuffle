@@ -64,8 +64,8 @@ import shuffle from 'fast-shuffle'
 
 const initialState = {
   ...
-  randomizer: Date.now(),
-  deck: ['♣', '♦', '♥', '♠']
+  deck: ['♣', '♦', '♥', '♠'],
+  randomizer: Date.now()
 }
 
 const dealerApp = (state = initialState, action) => {
@@ -75,8 +75,8 @@ const dealerApp = (state = initialState, action) => {
       const [ deck, randomizer ] = shuffle([state.deck, state.randomizer])
       return {
         ...state,
+        deck,
         randomizer,
-        deck
       }
     ...
     default:
