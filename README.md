@@ -31,8 +31,6 @@ The parameters are also curried, so it can be used in [pipelines](https://github
 ```js
 import { shuffle } from 'fast-shuffle'
 
-
-
 const randomCapitalLetter =
   ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
   |> shuffle,                      // :: [a] -> [a]
