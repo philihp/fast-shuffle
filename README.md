@@ -39,7 +39,7 @@ const randomCapitalLetter =
   |> _ => _.toUpperCase()          // :: a -> a
 ```
 
-The named `shuffle` export seen above uses `Math.random` for entropy. If you import it without the brackets, you'll get a deterministic shuffler which takes a number for its random seed (e.g. `Date.now()`).
+The named `shuffle` export seen above uses `Math.random` for entropy. If you import it without the brackets, you'll get a deterministic shuffler which takes an int for its random seed (e.g. `Date.now()`).
 
 ```js
 import shuffle from 'fast-shuffle' // note the change

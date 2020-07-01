@@ -60,6 +60,6 @@ const fastShuffle = (randomSeed, deck) => {
   return shuffler(deck)
 }
 
-export const shuffle = fastShuffle(Math.random)
+export const shuffle = fastShuffle(randomInt())
 
 export default fastShuffle
