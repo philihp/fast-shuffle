@@ -1,4 +1,7 @@
 {
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "name": "fast-shuffle",
   "version": "4.2.0",
   "description": "A fast implementation of a fisher-yates shuffle that does not mutate the source array.",

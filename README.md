@@ -25,10 +25,24 @@ const shuffledDeck = shuffle(sortedDeck)
 // [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
+The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
+
+```js
+import { shuffle } from 'fast-shuffle'
+
+
+
+const randomCapitalLetter =
+  ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
+  |> shuffle,                      // :: [a] -> [a]
+  |> _ => _[0]                     // :: [a] -> a
+  |> _ => _.toUpperCase()          // :: a -> a
+```
+
 The named `shuffle` export seen above uses `Math.random` for entropy. If you import it without the brackets, you'll get a deterministic shuffler which takes a number for its random seed (e.g. `Date.now()`).
 
 ```js
-import shuffle from 'fast-shuffle'
+import shuffle from 'fast-shuffle' // note the change
 
 const letters = ['a', 'b', 'c', 'd', 'e']
 const shuffleRed = shuffle(12345)
@@ -42,18 +56,6 @@ shuffleBlue(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
 shuffleBlue(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
 shuffleBlue(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
 shuffleBlue(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
-```
-
-The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
-
-```js
-import shuffle from 'fast-shuffle'
-
-const randomCapitalLetter =
-  ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
-  |> shuffle(Math.random),         // :: [a] -> [a]
-  |> _ => _[0]                     // :: [a] -> a
-  |> _ => _.toUpperCase()          // :: a -> a
 ```
 
 If you give it an array of your array and a random seed, you'll get a shuffled array and a new random seed back. This is a pure function, so you can use it in your Redux reducers.
