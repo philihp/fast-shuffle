@@ -43,7 +43,7 @@
     "@philihp/eslint-config": "3.0.2",
     "husky": "4.2.5",
     "jest-nyancat-reporter": "2.0.0",
-    "lint-staged": "10.2.13",
+    "lint-staged": "10.3.0",
     "prettier": "2.1.1",
     "ramda": "0.27.1"
   },
