@@ -37,9 +37,9 @@
     "fn-mt": "1.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "7.12.1",
-    "@babel/core": "7.12.3",
-    "@babel/preset-env": "7.12.1",
+    "@babel/cli": "7.12.7",
+    "@babel/core": "7.12.7",
+    "@babel/preset-env": "7.12.7",
     "@philihp/eslint-config": "4.1.0",
     "husky": "4.3.0",
     "jest-nyancat-reporter": "2.0.0",
