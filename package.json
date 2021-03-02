@@ -39,7 +39,7 @@
   "devDependencies": {
     "@babel/cli": "7.13.0",
     "@babel/core": "7.13.8",
-    "@babel/preset-env": "7.13.8",
+    "@babel/preset-env": "7.13.9",
     "@philihp/eslint-config": "4.2.0",
     "husky": "5.1.2",
     "jest-nyancat-reporter": "2.0.0",
