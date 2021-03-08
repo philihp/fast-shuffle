@@ -5,6 +5,7 @@
   "homepage": "https://github.com/philihp/fast-shuffle",
   "repository": "https://github.com/philihp/fast-shuffle.git",
   "keywords": [
+    "array",
     "knuth",
     "fisher-yates",
     "shuffle",
@@ -12,8 +13,7 @@
     "pure",
     "seed",
     "random",
-    "curried",
-    "ramda"
+    "curried"
   ],
   "main": "./dist/index.js",
   "files": [
