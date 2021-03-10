@@ -15,6 +15,7 @@
     "random",
     "curried"
   ],
+  "sideEffects": false,
   "main": "./dist/index.js",
   "files": [
     "/dist/",
