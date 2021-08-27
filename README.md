@@ -1,6 +1,7 @@
 # Fast Shuffle
 
 [![Version](https://badge.fury.io/js/fast-shuffle.svg)](https://www.npmjs.com/package/fast-shuffle)
+[![Dependencies](https://img.shields.io/librariesio/github/philihp/fast-shuffle?style=plastic)](https://libraries.io/github/philihp/fast-shuffle)
 ![Tests](https://github.com/philihp/fast-shuffle/workflows/tests/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/philihp/fast-shuffle/badge.svg?branch=main)](https://coveralls.io/github/philihp/fast-shuffle?branch=main)
 ![Downloads](https://img.shields.io/npm/dt/fast-shuffle)
