@@ -45,7 +45,7 @@
     "husky": "7.0.4",
     "jest-nyancat-reporter": "2.0.0",
     "lint-staged": "12.1.2",
-    "prettier": "2.4.1",
+    "prettier": "2.5.0",
     "ramda": "0.27.1"
   },
   "jest": {
