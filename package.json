@@ -42,7 +42,7 @@
     "@babel/core": "7.17.10",
     "@babel/preset-env": "7.17.10",
     "@philihp/eslint-config": "5.1.2",
-    "husky": "8.0.0",
+    "husky": "8.0.1",
     "jest-nyancat-reporter": "2.0.0",
     "lint-staged": "12.4.1",
     "prettier": "2.6.2",
