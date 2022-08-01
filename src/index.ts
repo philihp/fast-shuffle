@@ -6,7 +6,7 @@ import { newRandGen, randNext, randRange } from 'fn-mt'
  * we will just get a seed, but if you're reading this please tell me
  * if you ever send in your own randomizer :)
  */
-const fisherYatesShuffle = (random) => (sourceArray) => {
+const fisherYatesShuffle = (random: (arg: number) => number) => (sourceArray: any[]) => {
   const clone = sourceArray.slice(0)
   let sourceIndex = sourceArray.length
   let destinationIndex = 0
@@ -23,24 +23,27 @@ const fisherYatesShuffle = (random) => (sourceArray) => {
 
 const randomInt = () => (Math.random() * 2 ** 32) | 0
 
-const randomExternal = (random) => (maxIndex) =>
+const randomExternal = (random: () => number) => (maxIndex: number) =>
   ((random() / 2 ** 32) * maxIndex) | 0
 
-const randomInternal = (random) => {
+const randomInternal = (random: number) => {
   let randState = newRandGen(random)
-  return (maxIndex) => {
+  return (maxIndex: number) => {
     const [nextInt, nextState] = randRange(0, maxIndex, randState)
     randState = nextState
     return nextInt
   }
 }
 
-const randomSwitch = (random) =>
-  (typeof random === 'function' ? randomExternal : randomInternal)(random)
+const randomSwitch = (random: (number | (() => number))) => 
+  (typeof random === 'function') ?
+    randomExternal(random) :
+    randomInternal(random)
 
-const functionalShuffle = (deck, state) => {
+
+const functionalShuffle = (deck: any[], state: number) => {
   let randState = newRandGen(state)
-  const random = (maxIndex) => {
+  const random = (maxIndex: number) => {
     const [nextInt, nextState] = randRange(0, maxIndex, randState)
     randState = nextState
     return nextInt
@@ -48,9 +51,10 @@ const functionalShuffle = (deck, state) => {
   return [fisherYatesShuffle(random)(deck), randNext(randState)[0]]
 }
 
-const fastShuffle = (randomSeed, deck) => {
+const fastShuffle = (randomSeed: (number | [any[], number]), deck?: any[]) => {
   if (typeof randomSeed === 'object') {
-    const [fnDeck, fnState = randomInt()] = randomSeed
+    const fnDeck = randomSeed[0]
+    const fnState = randomSeed[1] || randomInt()
     return functionalShuffle(fnDeck, fnState)
   }
   const random = randomSwitch(randomSeed)
@@ -60,6 +64,6 @@ const fastShuffle = (randomSeed, deck) => {
   return shuffler(deck)
 }
 
-export const shuffle = fastShuffle(randomInt())
+export const shuffle = (deck: any[]) => fastShuffle(randomInt(), deck)
 
 export default fastShuffle
