@@ -1,5 +1,7 @@
 import { newRandGen, randNext, randRange } from 'fn-mt'
 
+type FastShuffleState = [deck: any[], seed: number];
+
 /**
  * This is the algorithm. Random should be a function that when given
  * an integer, returns an integer 0..n. I have a hunch most of the time
@@ -40,18 +42,20 @@ const randomSwitch = (random: (number | (() => number))) =>
     randomExternal(random) :
     randomInternal(random)
 
-
-const functionalShuffle = (deck: any[], state: number) => {
+const functionalShuffle = (deck: any[], state: number): FastShuffleState => {
   let randState = newRandGen(state)
   const random = (maxIndex: number) => {
     const [nextInt, nextState] = randRange(0, maxIndex, randState)
     randState = nextState
     return nextInt
   }
-  return [fisherYatesShuffle(random)(deck), randNext(randState)[0]]
+  return [fisherYatesShuffle(random)(deck), randNext(randState)[0]];
 }
 
-const fastShuffle = (randomSeed: (number | [any[], number]), deck?: any[]) => {
+function fastShuffle(seed: number): ((deck: any[]) => (typeof deck[number])[])
+function fastShuffle(seed: number, deck: any[]): (typeof deck[number])[]
+function fastShuffle(fnParams: FastShuffleState): FastShuffleState
+function fastShuffle(randomSeed: number | FastShuffleState, deck?: any[]) {
   if (typeof randomSeed === 'object') {
     const fnDeck = randomSeed[0]
     const fnState = randomSeed[1] || randomInt()
