@@ -40,7 +40,7 @@
   "devDependencies": {
     "@philihp/eslint-config": "6.0.0",
     "@philihp/prettier-config": "1.0.0",
-    "@types/jest": "28.1.7",
+    "@types/jest": "28.1.8",
     "@types/ramda": "0.28.15",
     "husky": "8.0.1",
     "jest": "28.1.3",
