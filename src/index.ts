@@ -1,6 +1,6 @@
 import { newRandGen, randNext, randRange } from 'fn-mt'
 
-type FastShuffleState<T> = [deck: T[], seed: number];
+type FastShuffleState<T> = [deck: T[], seed: number]
 
 /**
  * This is the algorithm. Random should be a function that when given
@@ -25,8 +25,7 @@ const fisherYatesShuffle = (random: (arg: number) => number) => (sourceArray: an
 
 const randomInt = () => (Math.random() * 2 ** 32) | 0
 
-const randomExternal = (random: () => number) => (maxIndex: number) =>
-  ((random() / 2 ** 32) * maxIndex) | 0
+const randomExternal = (random: () => number) => (maxIndex: number) => ((random() / 2 ** 32) * maxIndex) | 0
 
 const randomInternal = (random: number) => {
   let randState = newRandGen(random)
@@ -37,10 +36,8 @@ const randomInternal = (random: number) => {
   }
 }
 
-const randomSwitch = (random: (number | (() => number))) => 
-  (typeof random === 'function') ?
-    randomExternal(random) :
-    randomInternal(random)
+const randomSwitch = (random: number | (() => number)) =>
+  typeof random === 'function' ? randomExternal(random) : randomInternal(random)
 
 const functionalShuffle = <T>(deck: T[], state: number): FastShuffleState<T> => {
   let randState = newRandGen(state)
@@ -49,7 +46,7 @@ const functionalShuffle = <T>(deck: T[], state: number): FastShuffleState<T> => 
     randState = nextState
     return nextInt
   }
-  return [fisherYatesShuffle(random)(deck), randNext(randState)[0]];
+  return [fisherYatesShuffle(random)(deck), randNext(randState)[0]]
 }
 
 function fastShuffle(randomSeed: number | (() => number)): <T>(deck: T[]) => T[]
@@ -57,15 +54,15 @@ function fastShuffle<T>(randomSeed: number | (() => number), deck: T[]): T[]
 function fastShuffle<T>(fnParams: [deck: T[], randomSeed?: number]): FastShuffleState<T>
 function fastShuffle(randomSeed: number | (() => number) | [deck: unknown[], randomSeed?: number], deck?: unknown[]) {
   if (typeof randomSeed === 'object') {
-    const fnDeck = randomSeed[0];
-    const fnState = randomSeed[1] ?? randomInt();
-    return functionalShuffle(fnDeck, fnState);
+    const fnDeck = randomSeed[0]
+    const fnState = randomSeed[1] ?? randomInt()
+    return functionalShuffle(fnDeck, fnState)
   }
-  const random = randomSwitch(randomSeed);
-  const shuffler = fisherYatesShuffle(random);
+  const random = randomSwitch(randomSeed)
+  const shuffler = fisherYatesShuffle(random)
   // if no second param given, return a curried shuffler
-  if (deck === undefined) return shuffler;
-  return shuffler(deck);
+  if (deck === undefined) return shuffler
+  return shuffler(deck)
 }
 
 export const shuffle = <T>(deck: T[]) => fastShuffle(randomInt(), deck)
