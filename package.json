@@ -41,7 +41,7 @@
     "@philihp/eslint-config": "6.0.2",
     "@philihp/prettier-config": "1.0.0",
     "@types/jest": "29.1.2",
-    "@types/ramda": "0.28.16",
+    "@types/ramda": "0.28.18",
     "@typescript-eslint/eslint-plugin": "5.40.0",
     "@typescript-eslint/parser": "5.40.0",
     "eslint": "8.25.0",
