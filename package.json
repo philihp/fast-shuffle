@@ -44,7 +44,7 @@
     "@types/ramda": "0.28.23",
     "@typescript-eslint/eslint-plugin": "5.57.1",
     "@typescript-eslint/parser": "5.57.1",
-    "eslint": "8.37.0",
+    "eslint": "8.38.0",
     "eslint-import-resolver-typescript": "3.5.5",
     "eslint-plugin-import": "2.27.5",
     "husky": "8.0.3",
