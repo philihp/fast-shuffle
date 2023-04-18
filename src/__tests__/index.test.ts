@@ -62,7 +62,7 @@ describe('default', () => {
     const head = (array: any[]) => array?.[0]
     // @ts-ignore
     const drawCard = pipe(letters, pseudoShuffle, head)
-    expect(drawCard()).toBe('b')
+    expect(drawCard()).toBe('c')
   })
 
   it('accepts a custom random function', () => {
@@ -98,7 +98,7 @@ describe('default', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const d2 = fastShuffle(12345, d1)
-    expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
+    expect(d2).toStrictEqual(['C', 'G', 'H', 'B', 'F', 'D', 'E', 'A'])
   })
 })
 
@@ -120,7 +120,7 @@ describe('fastShuffle for reducers', () => {
     // @ts-ignore
     const [d2, seedState] = fastShuffle([d1, 12345])
     expect(seedState).toBeDefined()
-    expect(d2).toStrictEqual(['B', 'H', 'F', 'C', 'G', 'A', 'D', 'E'])
+    expect(d2).toStrictEqual(['C', 'G', 'H', 'B', 'F', 'D', 'E', 'A'])
   })
 
   it('returns different arrays with different seed ints', () => {

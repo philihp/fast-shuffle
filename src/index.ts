@@ -1,4 +1,6 @@
-import { newRandGen, randNext, randRange } from 'fn-mt'
+import { createPcg32, randomInt as randNext } from 'pcg'
+
+const SEQUENCE = 12345
 
 type FastShuffleState<T> = [deck: T[], seed: number]
 
@@ -28,9 +30,9 @@ const randomInt = () => (Math.random() * 2 ** 32) | 0
 const randomExternal = (random: () => number) => (maxIndex: number) => ((random() / 2 ** 32) * maxIndex) | 0
 
 const randomInternal = (random: number) => {
-  let randState = newRandGen(random)
+  let randState = createPcg32({}, random, SEQUENCE)
   return (maxIndex: number) => {
-    const [nextInt, nextState] = randRange(0, maxIndex, randState)
+    const [nextInt, nextState] = randNext(0, maxIndex, randState)
     randState = nextState
     return nextInt
   }
@@ -40,13 +42,13 @@ const randomSwitch = (random: number | (() => number)) =>
   typeof random === 'function' ? randomExternal(random) : randomInternal(random)
 
 const functionalShuffle = <T>(deck: T[], state: number): FastShuffleState<T> => {
-  let randState = newRandGen(state)
+  let randState = createPcg32({}, state, SEQUENCE)
   const random = (maxIndex: number) => {
-    const [nextInt, nextState] = randRange(0, maxIndex, randState)
+    const [nextInt, nextState] = randNext(0, maxIndex, randState)
     randState = nextState
     return nextInt
   }
-  return [fisherYatesShuffle(random)(deck), randNext(randState)[0]]
+  return [fisherYatesShuffle(random)(deck), randNext(0, 2 ** 32 - 1, randState)[0]]
 }
 
 function fastShuffle(randomSeed: number | (() => number)): <T>(deck: T[]) => T[]
