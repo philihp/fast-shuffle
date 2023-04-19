@@ -1,4 +1,4 @@
-import { createPcg32, randomInt as randNext } from 'pcg'
+import { createPcg32, randomInt as randNext } from 'fn-pcg'
 
 const SEQUENCE = 12345
 
