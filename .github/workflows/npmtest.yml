@@ -11,13 +11,10 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 14.x
-          - 15.x
-          - 16.x
-          - 17.x
-          - 18.x
-          - 19.x
-          - 20.x
+          - 16.x # EOL 2023-09-11
+          - 18.x # EOL 2025-04-30
+          - 19.x # EOL 2023-06-01
+          - 20.x # EOL 2026-04-30
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
