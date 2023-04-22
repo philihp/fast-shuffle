@@ -35,7 +35,7 @@
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "fn-pcg": "1.0.1"
+    "fn-pcg": "2.0.1"
   },
   "devDependencies": {
     "@philihp/eslint-config": "6.0.2",
