@@ -42,7 +42,7 @@
     "@philihp/prettier-config": "1.0.0",
     "@tsconfig/node20": "1.0.2",
     "@types/jest": "29.5.2",
-    "@types/ramda": "0.29.2",
+    "@types/ramda": "0.29.3",
     "@typescript-eslint/eslint-plugin": "5.60.0",
     "@typescript-eslint/parser": "5.60.0",
     "eslint": "8.43.0",
