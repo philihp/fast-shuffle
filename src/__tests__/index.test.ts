@@ -1,10 +1,10 @@
 import { pipe } from 'ramda'
-import fastShuffle, { shuffle } from '..'
+import { shuffle, createShuffle } from '..'
 
 describe('default', () => {
   it('shuffles the array', () => {
     expect.assertions(2)
-    const pseudoShuffle = fastShuffle(12345)
+    const pseudoShuffle = createShuffle(12345)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const d2 = pseudoShuffle(d1)
     expect(d2).toStrictEqual(expect.arrayContaining(d1))
@@ -13,7 +13,7 @@ describe('default', () => {
 
   it('does not mutate the source', () => {
     expect.assertions(1)
-    const pseudoShuffle = fastShuffle(12345)
+    const pseudoShuffle = createShuffle(12345)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     pseudoShuffle(d1)
     expect(d1).toMatchObject(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
@@ -21,7 +21,7 @@ describe('default', () => {
 
   it('does a shallow clone', () => {
     expect.assertions(3)
-    const pseudoShuffle = fastShuffle(12345)
+    const pseudoShuffle = createShuffle(12345)
     const d1 = [
       { name: 'Alice', money: 10 },
       { name: 'Betty', money: 20 },
@@ -35,7 +35,7 @@ describe('default', () => {
 
   it('can be sorted back into the source array', () => {
     expect.assertions(1)
-    const pseudoShuffle = fastShuffle(12345)
+    const pseudoShuffle = createShuffle(12345)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].sort()
     const d2 = pseudoShuffle(d1)
     const d3 = d2.sort()
@@ -46,13 +46,13 @@ describe('default', () => {
     expect.assertions(1)
     const d = new Array(10000)
     const rng = jest.fn()
-    fastShuffle(rng)(d)
+    createShuffle(rng)(d)
     expect(rng).toHaveBeenCalledTimes(d.length)
   })
 
   it('can be piped as a curried function', () => {
     expect.assertions(1)
-    const pseudoShuffle = fastShuffle(12345)
+    const pseudoShuffle = createShuffle(12345)
     const letters = () => ['a', 'b', 'c', 'd']
     const head = (array: any[]) => array?.[0]
     const drawCard = pipe(letters, pseudoShuffle, head)
@@ -66,7 +66,7 @@ describe('default', () => {
       0.2045602793853012, 0.8264361317269504, 0.5677250262815505, 0.5320779164321721, 0.5955447026062757,
     ]
     // @ts-ignore
-    const pseudoShuffle = fastShuffle(() => noise.pop())
+    const pseudoShuffle = createShuffle(() => noise.pop())
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const d2 = pseudoShuffle(d1)
     expect(d1).not.toStrictEqual(d2)
@@ -79,7 +79,7 @@ describe('default', () => {
       0.2045602793853012, 0.8264361317269504, 0.5677250262815505, 0.5320779164321721, 0.5955447026062757,
     ]
     // @ts-ignore
-    const pseudoShuffle = fastShuffle(() => noise.pop())
+    const pseudoShuffle = createShuffle(() => noise.pop())
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const d2 = pseudoShuffle(d1)
     expect(d1).not.toStrictEqual(d2)
@@ -89,7 +89,7 @@ describe('default', () => {
   it('also, rather than curried, accepts a seed and the source array', () => {
     expect.assertions(1)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const d2 = fastShuffle(12345, d1)
+    const d2 = createShuffle(12345, d1)
     expect(d2).toStrictEqual(['C', 'G', 'H', 'B', 'F', 'D', 'E', 'A'])
   })
 })
@@ -104,11 +104,11 @@ describe('shuffle', () => {
   })
 })
 
-describe('fastShuffle for reducers', () => {
+describe('createShuffle for reducers', () => {
   it('accepts [array, number]', () => {
     expect.assertions(2)
     const d1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const [d2, seedState] = fastShuffle([d1, 12345])
+    const [d2, seedState] = createShuffle([d1, 12345])
     expect(seedState).toBeDefined()
     expect(d2).toStrictEqual(['C', 'G', 'H', 'B', 'F', 'D', 'E', 'A'])
   })
@@ -116,8 +116,8 @@ describe('fastShuffle for reducers', () => {
   it('returns different arrays with different seed ints', () => {
     expect.assertions(2)
     const s1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const [d1] = fastShuffle([s1, 12345])
-    const [d2] = fastShuffle([s1, 67890])
+    const [d1] = createShuffle([s1, 12345])
+    const [d2] = createShuffle([s1, 67890])
     expect(d1).not.toStrictEqual(d2)
     expect(d1.sort()).toStrictEqual(d2.sort())
   })
@@ -125,15 +125,15 @@ describe('fastShuffle for reducers', () => {
   it('finds its own seed, if not given one', () => {
     expect.assertions(1)
     const s1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const [d1] = fastShuffle([s1, undefined])
+    const [d1] = createShuffle([s1, undefined])
     expect(s1.every((r) => d1.includes(r))).toBe(true)
   })
 
   it('nondeterministically seeds, if no seed provided', () => {
     expect.assertions(2)
     const s1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const [d1, r1] = fastShuffle([s1, undefined])
-    const [d2, r2] = fastShuffle([s1, undefined])
+    const [d1, r1] = createShuffle([s1, undefined])
+    const [d2, r2] = createShuffle([s1, undefined])
     expect(d1.every((r: any) => d2.includes(r))).toBe(true)
     expect(r1).not.toStrictEqual(r2)
   })
