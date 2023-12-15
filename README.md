@@ -26,7 +26,7 @@ const shuffledDeck = shuffle(sortedDeck)
 // [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
-The named `shuffle` export seen above uses `Math.random` for entropy. If you import it without the brackets, you'll get a deterministic shuffler which takes an int for its random seed (e.g. `Date.now()`).
+The named `shuffle` export seen above uses `Math.random` for entropy. You can also create a a deterministic shuffler which takes an int for its random seed (e.g. `Date.now()`).
 
 ```js
 import { createShuffle } from 'fast-shuffle' // note the change
