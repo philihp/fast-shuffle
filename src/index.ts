@@ -69,4 +69,4 @@ function fastShuffle(randomSeed: number | (() => number) | [deck: unknown[], ran
 
 export const shuffle = <T>(deck: T[]) => fastShuffle(randomInt(), deck)
 
-export const fnShuffle = fastShuffle
+export const createShuffle = fastShuffle

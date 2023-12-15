@@ -29,16 +29,16 @@ const shuffledDeck = shuffle(sortedDeck)
 The named `shuffle` export seen above uses `Math.random` for entropy. If you import it without the brackets, you'll get a deterministic shuffler which takes an int for its random seed (e.g. `Date.now()`).
 
 ```js
-import { fnShuffle } from 'fast-shuffle' // note the change
+import { createShuffle } from 'fast-shuffle' // note the change
 
 const letters = ['a', 'b', 'c', 'd', 'e']
-const shuffleRed = fnShuffle(12345)
+const shuffleRed = createShuffle(12345)
 shuffleRed(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
 shuffleRed(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
 shuffleRed(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
 shuffleRed(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
 
-const shuffleBlue = fnShuffle(12345)
+const shuffleBlue = createShuffle(12345)
 shuffleBlue(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
 shuffleBlue(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
 shuffleBlue(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
@@ -48,11 +48,11 @@ shuffleBlue(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
 The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
 
 ```js
-import { fnShuffle } from 'fast-shuffle'
+import { createShuffle } from 'fast-shuffle'
 
 const randomCapitalLetter =
   ['a', 'b', 'c', 'd', 'e', 'f']   // :: () -> [a]
-  |> fnShuffle(Math.random),       // :: [a] -> [a]
+  |> createShuffle(Math.random),       // :: [a] -> [a]
   |> _ => _[0]                     // :: [a] -> a
   |> _ => _.toUpperCase()          // :: a -> a
 ```
@@ -61,7 +61,7 @@ If you give it an array of your array and a random seed, you'll get a shuffled a
 
 ```js
 import { SHUFFLE_DECK } from './actions'
-import { fnShuffle } from 'fast-shuffle'
+import { createShuffle } from 'fast-shuffle'
 
 const initialState = {
   ...
@@ -73,7 +73,7 @@ const dealerApp = (state = initialState, action) => {
   switch (action.type) {
     ...
     case SHUFFLE_DECK:
-      const [ deck, randomizer ] = fnShuffle([state.deck, state.randomizer])
+      const [ deck, randomizer ] = createShuffle([state.deck, state.randomizer])
       return {
         ...state,
         deck,
