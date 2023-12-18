@@ -26,7 +26,7 @@ const shuffledDeck = shuffle(sortedDeck)
 // [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
-The named `shuffle` export seen above uses `Math.random` for entropy. You can also create a a deterministic shuffler which takes an int for its random seed (e.g. `Date.now()`).
+The named `shuffle` export seen above uses `Math.random` for entropy. This is the easiest way to use the library, but it may be useful to create a purely functional shuffler which takes either a random seed which is used in a [PCG](https://www.pcg-random.org/) for entropy, or a function ([as seen here](https://github.com/philihp/fast-shuffle/blob/c36f6cfb27312590301446721b5ba0539baab591/src/__tests__/index.test.ts#L62-L73)).
 
 ```js
 import { createShuffle } from 'fast-shuffle' // note the change
@@ -57,7 +57,7 @@ const randomCapitalLetter =
   |> _ => _.toUpperCase()          // :: a -> a
 ```
 
-If you give it an array of your array and a random seed, you'll get a shuffled array and a new random seed back. This is a pure function and the original array is not mutated, so you can use it in your Redux reducers. The returned, shuffled array is a shallow copy, so if you use this in React, [you will often avoid unnecessary rerenders](https://redux.js.org/faq/performance).
+If you give it an array of your source array and a random seed, you'll get a shuffled array and a new random seed back. This is a pure function and the original array is not mutated, so you can use it in your Redux reducers. The returned, shuffled array is a shallow copy, so if you use this in React, [you will often avoid unnecessary rerenders](https://redux.js.org/faq/performance).
 
 ```js
 import { SHUFFLE_DECK } from './actions'
