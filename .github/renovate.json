@@ -1,3 +1,19 @@
 {
-  "extends": ["@philihp"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "schedule": ["every weekend"],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Independency Dashboard",
+  "semanticCommits": "enabled",
+  "transitiveRemediation": true,
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "depTypeList": ["devDependencies"],
+      "automerge": true
+    }
+  ]
 }
