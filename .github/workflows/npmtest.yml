@@ -11,10 +11,13 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 16.x # EOL 2023-09-11
+          - 16.x # deprecated
+          - 17.x # deprecated
           - 18.x # EOL 2025-04-30
-          - 19.x # EOL 2023-06-01
+          - 19.x # deprecated
           - 20.x # EOL 2026-04-30
+          - 21.x # deprecated
+          - 22.x # EOL 2027-04-30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
