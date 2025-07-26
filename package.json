@@ -52,7 +52,7 @@
     "ramda": "0.31.3",
     "ts-jest": "29.4.0",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.37.0"
+    "typescript-eslint": "8.38.0"
   },
   "jest": {
     "preset": "ts-jest",
