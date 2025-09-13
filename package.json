@@ -41,7 +41,7 @@
     "@philihp/prettier-config": "1.0.0",
     "@tsconfig/node20": "20.1.6",
     "@types/jest": "29.5.14",
-    "@types/ramda": "0.31.0",
+    "@types/ramda": "0.31.1",
     "eslint": "9.35.0",
     "eslint-plugin-jest": "29.0.1",
     "eslint-plugin-prettier": "5.5.4",
