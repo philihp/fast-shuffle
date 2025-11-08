@@ -28,9 +28,9 @@
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint src",
     "prepare": "husky",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "test:watch": "node --test --watch"
   },
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
@@ -40,17 +40,13 @@
   "devDependencies": {
     "@philihp/prettier-config": "1.0.0",
     "@tsconfig/node20": "20.1.6",
-    "@types/jest": "29.5.14",
     "@types/ramda": "0.31.1",
     "eslint": "9.39.0",
-    "eslint-plugin-jest": "29.0.1",
     "eslint-plugin-prettier": "5.5.4",
     "husky": "9.1.7",
-    "jest": "29.7.0",
     "lint-staged": "16.2.6",
     "prettier": "3.6.2",
     "ramda": "0.32.0",
-    "ts-jest": "29.4.5",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.2"
   },
