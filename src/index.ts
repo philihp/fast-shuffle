@@ -10,7 +10,7 @@ type FastShuffleState<T> = [deck: T[], seed: number]
  * we will just get a seed, but if you're reading this please tell me
  * if you ever send in your own randomizer :)
  */
-const fisherYatesShuffle = (random: (arg: number) => number) => (sourceArray: any[]) => {
+const fisherYatesShuffle = (random: (arg: number) => number) => (sourceArray: unknown[]) => {
   const clone = sourceArray.slice(0)
   let sourceIndex = sourceArray.length
   let destinationIndex = 0
