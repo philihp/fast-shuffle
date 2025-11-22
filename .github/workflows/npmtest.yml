@@ -19,7 +19,7 @@ jobs:
           - 21.x # deprecated
           - 22.x # EOL 2027-04-30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
