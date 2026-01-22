@@ -1,5 +1,5 @@
 import { pipe } from 'ramda'
-import { shuffle, createShuffle } from '..'
+import { shuffle, createShuffle } from '../index.ts'
 
 describe('default', () => {
   it('shuffles the array', () => {
