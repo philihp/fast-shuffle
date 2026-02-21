@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@philihp/prettier-config": "1.0.0",
-    "@tsconfig/node20": "20.1.9",
+    "@tsconfig/node22": "22.0.0",
     "@types/jest": "29.5.14",
     "@types/ramda": "0.31.1",
     "eslint": "10.0.1",
