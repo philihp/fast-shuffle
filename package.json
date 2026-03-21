@@ -16,6 +16,7 @@
     "curried"
   ],
   "sideEffects": false,
+  "type": "module",
   "main": "./dist/index.js",
   "files": [
     "/dist",
