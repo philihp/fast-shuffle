@@ -54,7 +54,7 @@ describe('default', () => {
     expect.assertions(1)
     const pseudoShuffle = createShuffle(12345)
     const letters = () => ['a', 'b', 'c', 'd']
-    const head = (array: any[]) => array?.[0]
+    const head = (array: unknown[]) => array?.[0]
     const drawCard = pipe(letters, pseudoShuffle, head)
     expect(drawCard()).toBe('c')
   })
@@ -134,7 +134,7 @@ describe('createShuffle for reducers', () => {
     const s1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const [d1, r1] = createShuffle([s1, undefined])
     const [d2, r2] = createShuffle([s1, undefined])
-    expect(d1.every((r: any) => d2.includes(r))).toBe(true)
+    expect(d1.every((r: string) => d2.includes(r))).toBe(true)
     expect(r1).not.toStrictEqual(r2)
   })
 })
