@@ -52,7 +52,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@philihp/prettier-config": "1.0.0",
-    "@tsconfig/node22": "22.0.2",
+    "@tsconfig/node22": "22.0.5",
     "eslint": "10.3.0",
     "eslint-plugin-prettier": "5.5.5",
     "husky": "9.1.7",
