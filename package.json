@@ -40,9 +40,9 @@
     "build:cjs": "tsc -p tsconfig.build.cjs.json && node -e \"require('node:fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
     "lint": "eslint src",
     "prepare": "husky",
-    "test": "node --import tsx --test 'src/**/*.test.ts'",
-    "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage',{recursive:true})\" && node --import tsx --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test 'src/**/*.test.ts'",
-    "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
+    "test": "node --import tsx --test src/__tests__/index.test.ts",
+    "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage',{recursive:true})\" && node --import tsx --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test src/__tests__/index.test.ts",
+    "test:watch": "node --import tsx --test --watch src/__tests__/index.test.ts"
   },
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
