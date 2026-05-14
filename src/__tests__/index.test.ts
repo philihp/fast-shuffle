@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
-import { shuffle, createShuffle } from '..'
+import { shuffle, createShuffle } from '../index.ts'
 
 const pipe =
   (...fns: Array<(...args: any[]) => any>) =>
