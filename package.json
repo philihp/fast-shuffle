@@ -46,6 +46,9 @@
   },
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "pcg": "1.1.0"
   },
