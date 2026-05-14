@@ -16,7 +16,17 @@
     "curried"
   ],
   "sideEffects": false,
-  "main": "./dist/index.js",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "files": [
     "/dist",
     "!/dist/**/__tests__/*"
@@ -25,12 +35,14 @@
     "test": "test"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p tsconfig.build.esm.json",
+    "build:cjs": "tsc -p tsconfig.build.cjs.json && node -e \"require('node:fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
     "lint": "eslint src",
     "prepare": "husky",
-    "test": "node --test",
-    "test:coverage": "node --test --experimental-test-coverage",
-    "test:watch": "node --test --watch"
+    "test": "node --import tsx --test src/__tests__/index.test.ts",
+    "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage',{recursive:true})\" && node --import tsx --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test src/__tests__/index.test.ts",
+    "test:watch": "node --import tsx --test --watch src/__tests__/index.test.ts"
   },
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
@@ -38,24 +50,17 @@
     "pcg": "1.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@philihp/prettier-config": "1.0.0",
-    "@tsconfig/node20": "20.1.6",
-    "@types/ramda": "0.31.1",
-    "eslint": "9.39.0",
-    "eslint-plugin-prettier": "5.5.4",
+    "@tsconfig/node22": "22.0.2",
+    "eslint": "10.3.0",
+    "eslint-plugin-prettier": "5.5.5",
     "husky": "9.1.7",
-    "lint-staged": "16.2.6",
-    "prettier": "3.6.2",
-    "ramda": "0.32.0",
+    "lint-staged": "17.0.4",
+    "prettier": "3.8.3",
+    "tsx": "4.20.3",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "modulePathIgnorePatterns": [
-      "dist/"
-    ]
+    "typescript-eslint": "8.59.2"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,json,.ts,.tsx}": [
