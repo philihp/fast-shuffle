@@ -1,0 +1,4 @@
+Cost of 100 random ints in [0, 1000):
+
+Math.random | 0        1552.30k ops/s   7.4 ns / call
+pcg randomInt            10.05k ops/s   1048.5 ns / call

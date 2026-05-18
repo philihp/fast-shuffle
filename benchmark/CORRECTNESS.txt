@@ -1,0 +1,19 @@
+Correctness + bias check (deck size = 6, 200k trials per shuffler)
+
+  expected chi-square ≈ dof = 25
+
+shuffler                          permutation?  chi-square
+------------------------------------------------------------
+fast-shuffle (Math.random)           yes        23.6
+fast-shuffle (seeded PCG)            yes        32.8
+fast-shuffle (external rand)         yes        39.0
+Fisher-Yates in-place + slice        yes        38.0
+Fisher-Yates inline (alg only)       yes        28.4
+sort(() => rand - 0.5)  [biased]     yes        103774.7
+Schwartzian (map-sort-map)           yes        26.0
+lodash.shuffle                       yes        24.7
+knuth-shuffle                        yes        31.1
+array-shuffle (Sindre)               yes        27.6
+shuffle-array (copy:true)            yes        36.5
+d3-array shuffle                     yes        27.8
+d3-array shuffler(Math.random)       yes        28.4

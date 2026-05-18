@@ -1,0 +1,108 @@
+Node v22.22.2 / V8 12.4.254.21-node.39
+Platform: linux x64
+CPU: Intel(R) Xeon(R) Processor @ 2.10GHz
+
+Measuring: time to produce a NEW shuffled array (non-mutating).
+Higher ops/sec is better. "rel" is throughput relative to the fastest.
+
+=== n = 10 ===
+shuffler                            ops/sec             mean      ±rme     rel
+----------------------------------------------------------------------------------
+Fisher-Yates in-place + slice          8.15M     156.81 ns  ±15.17 ns     1.00x
+d3-array shuffle                       7.69M     166.84 ns  ± 9.00 ns     0.94x
+d3-array shuffler(Math.random)         7.37M     160.09 ns  ± 0.66 ns     0.90x
+array-shuffle (Sindre)                 7.14M     179.82 ns  ±21.28 ns     0.88x
+Fisher-Yates inline (alg only)         6.99M     166.76 ns  ± 0.75 ns     0.86x
+knuth-shuffle                          6.90M     242.48 ns  ±84.07 ns     0.85x
+shuffle-array (copy:true)              6.86M     179.08 ns  ± 2.61 ns     0.84x
+fast-shuffle (external rand)           5.52M     214.34 ns  ± 1.14 ns     0.68x
+lodash.shuffle                         5.30M     210.53 ns  ± 0.79 ns     0.65x
+sort(() => rand - 0.5)  [biased]       1.44M     791.78 ns  ± 8.46 ns     0.18x
+Schwartzian (map-sort-map)             1.36M     838.59 ns  ±10.84 ns     0.17x
+fast-shuffle (seeded PCG)             89.09k      12.40 µs  ±130.97 ns     0.01x
+fast-shuffle (Math.random)            82.62k      13.23 µs  ±118.50 ns     0.01x
+
+=== n = 52 ===
+shuffler                            ops/sec             mean      ±rme     rel
+----------------------------------------------------------------------------------
+d3-array shuffle                       2.35M     480.22 ns  ±26.72 ns     1.00x
+d3-array shuffler(Math.random)         2.18M     541.24 ns  ±49.73 ns     0.93x
+Fisher-Yates in-place + slice          2.18M     497.33 ns  ± 2.97 ns     0.93x
+knuth-shuffle                          1.98M     559.88 ns  ± 6.07 ns     0.84x
+array-shuffle (Sindre)                 1.95M     577.67 ns  ±35.62 ns     0.83x
+shuffle-array (copy:true)              1.88M     600.84 ns  ± 5.19 ns     0.80x
+Fisher-Yates inline (alg only)         1.86M     599.05 ns  ± 6.55 ns     0.79x
+lodash.shuffle                         1.72M     637.05 ns  ± 3.79 ns     0.73x
+fast-shuffle (external rand)           1.34M     832.02 ns  ± 6.32 ns     0.57x
+Schwartzian (map-sort-map)           166.01k       6.50 µs  ±133.41 ns     0.07x
+sort(() => rand - 0.5)  [biased]     153.71k       6.96 µs  ±53.27 ns     0.07x
+fast-shuffle (seeded PCG)             17.80k      59.00 µs  ±526.65 ns     0.01x
+fast-shuffle (Math.random)            17.39k      60.54 µs  ±561.99 ns     0.01x
+
+=== n = 100 ===
+shuffler                            ops/sec             mean      ±rme     rel
+----------------------------------------------------------------------------------
+d3-array shuffle                       1.24M     895.56 ns  ±10.55 ns     1.00x
+Fisher-Yates in-place + slice          1.23M     869.17 ns  ± 3.49 ns     0.99x
+d3-array shuffler(Math.random)         1.22M     917.17 ns  ±10.40 ns     0.98x
+knuth-shuffle                          1.13M     986.17 ns  ±11.29 ns     0.91x
+shuffle-array (copy:true)              1.10M       1.03 µs  ±17.01 ns     0.89x
+array-shuffle (Sindre)                 1.07M       1.01 µs  ± 8.20 ns     0.86x
+Fisher-Yates inline (alg only)         1.05M       1.09 µs  ±15.17 ns     0.84x
+lodash.shuffle                       980.49k       1.13 µs  ±10.51 ns     0.79x
+fast-shuffle (external rand)         773.85k       1.43 µs  ±13.12 ns     0.62x
+Schwartzian (map-sort-map)            76.47k      13.88 µs  ±131.94 ns     0.06x
+sort(() => rand - 0.5)  [biased]      73.17k      14.47 µs  ±156.00 ns     0.06x
+fast-shuffle (seeded PCG)              9.22k     112.11 µs  ±980.76 ns     0.01x
+fast-shuffle (Math.random)             9.12k     113.64 µs  ± 1.04 µs     0.01x
+
+=== n = 1,000 ===
+shuffler                            ops/sec             mean      ±rme     rel
+----------------------------------------------------------------------------------
+d3-array shuffler(Math.random)       129.22k       8.19 µs  ±57.51 ns     1.00x
+Fisher-Yates in-place + slice        126.47k       8.66 µs  ±106.00 ns     0.98x
+d3-array shuffle                     125.52k       8.64 µs  ±82.51 ns     0.97x
+knuth-shuffle                        118.88k       8.96 µs  ±58.06 ns     0.92x
+shuffle-array (copy:true)            115.49k       9.29 µs  ±63.08 ns     0.89x
+array-shuffle (Sindre)               111.32k       9.84 µs  ±111.92 ns     0.86x
+Fisher-Yates inline (alg only)       109.32k      10.04 µs  ±81.52 ns     0.85x
+lodash.shuffle                       106.86k       9.95 µs  ±40.23 ns     0.83x
+fast-shuffle (external rand)          78.87k      13.58 µs  ±84.51 ns     0.61x
+Schwartzian (map-sort-map)             4.85k     212.17 µs  ± 1.98 µs     0.04x
+sort(() => rand - 0.5)  [biased]       4.58k     221.78 µs  ± 1.26 µs     0.04x
+fast-shuffle (Math.random)            876.80       1.15 ms  ± 8.99 µs     0.01x
+fast-shuffle (seeded PCG)             855.72       1.18 ms  ±10.44 µs     0.01x
+
+=== n = 10,000 ===
+shuffler                            ops/sec             mean      ±rme     rel
+----------------------------------------------------------------------------------
+Fisher-Yates in-place + slice         11.90k      90.30 µs  ±822.83 ns     1.00x
+d3-array shuffle                      11.89k      90.94 µs  ±860.32 ns     1.00x
+d3-array shuffler(Math.random)        11.78k      92.11 µs  ±897.68 ns     0.99x
+knuth-shuffle                         11.29k      94.49 µs  ±837.14 ns     0.95x
+shuffle-array (copy:true)             10.95k      98.35 µs  ±912.56 ns     0.92x
+array-shuffle (Sindre)                10.41k     102.76 µs  ±922.33 ns     0.87x
+Fisher-Yates inline (alg only)        10.01k     108.24 µs  ± 1.09 µs     0.84x
+lodash.shuffle                         9.92k     108.53 µs  ± 1.07 µs     0.83x
+fast-shuffle (external rand)           7.40k     143.90 µs  ± 1.38 µs     0.62x
+Schwartzian (map-sort-map)            340.68       2.97 ms  ±41.47 µs     0.03x
+sort(() => rand - 0.5)  [biased]      316.73       3.17 ms  ±25.20 µs     0.03x
+fast-shuffle (Math.random)             83.05      12.05 ms  ±95.53 µs     0.01x
+fast-shuffle (seeded PCG)              81.93      12.41 ms  ±653.51 µs     0.01x
+
+=== n = 100,000 ===
+shuffler                            ops/sec             mean      ±rme     rel
+----------------------------------------------------------------------------------
+Fisher-Yates in-place + slice         814.90       1.32 ms  ±33.48 µs     1.00x
+d3-array shuffler(Math.random)        809.06       1.32 ms  ±32.61 µs     0.99x
+array-shuffle (Sindre)                801.58       1.34 ms  ±37.49 µs     0.98x
+d3-array shuffle                      797.99       1.36 ms  ±39.69 µs     0.98x
+knuth-shuffle                         766.16       1.39 ms  ±34.72 µs     0.94x
+shuffle-array (copy:true)             735.47       1.46 ms  ±37.46 µs     0.90x
+lodash.shuffle                        695.58       1.52 ms  ±36.83 µs     0.85x
+Fisher-Yates inline (alg only)        554.71       1.97 ms  ±66.16 µs     0.68x
+fast-shuffle (external rand)          428.12       2.51 ms  ±86.29 µs     0.53x
+sort(() => rand - 0.5)  [biased]       26.49      37.94 ms  ±995.62 µs     0.03x
+Schwartzian (map-sort-map)             15.65      64.29 ms  ± 2.19 ms     0.02x
+fast-shuffle (Math.random)              8.45     118.56 ms  ± 2.31 ms     0.01x
+fast-shuffle (seeded PCG)               8.35     119.87 ms  ± 2.03 ms     0.01x
