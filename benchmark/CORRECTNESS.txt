@@ -3,18 +3,10 @@ pcg: 2.0.0
 
   expected chi-square ≈ dof = 25
 
-shuffler                          permutation?  chi-square
-------------------------------------------------------------
-fast-shuffle (Math.random)           yes        30.0
-fast-shuffle (seeded PCG)            yes        32.8
-fast-shuffle (external rand)         yes        43.4
-Fisher-Yates in-place + slice        yes        32.0
-Fisher-Yates inline (alg only)       yes        32.7
-sort(() => rand - 0.5)  [biased]     yes        104610.0
-Schwartzian (map-sort-map)           yes        49.0
-lodash.shuffle                       yes        25.0
-knuth-shuffle                        yes        16.0
-array-shuffle (Sindre)               yes        33.5
-shuffle-array (copy:true)            yes        37.9
-d3-array shuffle                     yes        23.5
-d3-array shuffler(Math.random)       yes        22.9
+shuffler                      permutation?  chi-square
+--------------------------------------------------------
+fast-shuffle (Math.random)       yes        19.5
+fast-shuffle (seeded PCG)        yes        32.8
+fast-shuffle (external rand)     yes        33.5
+lodash.shuffle                   yes        12.0
+array-shuffle (Sindre)           yes        33.0
