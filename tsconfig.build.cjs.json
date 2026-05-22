@@ -6,5 +6,5 @@
     "verbatimModuleSyntax": false,
     "outDir": "./dist/cjs"
   },
-  "exclude": ["src/**/*.test.ts"]
+  "exclude": ["src/**/*.test.ts", "src/benchmark.ts"]
 }
