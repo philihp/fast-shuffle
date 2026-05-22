@@ -5,5 +5,5 @@
     "moduleResolution": "nodenext",
     "outDir": "./dist/esm"
   },
-  "exclude": ["src/**/*.test.ts", "src/benchmark.ts"]
+  "exclude": ["src/**/*.test.ts"]
 }
