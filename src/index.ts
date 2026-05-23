@@ -16,11 +16,12 @@ const fisherYatesShuffle = (random: (arg: number) => number) => (sourceArray: un
   let destinationIndex = 0
   const shuffled = new Array(sourceIndex)
 
-  while (sourceIndex) {
+  while (sourceIndex > 1) {
     const randomIndex = random(sourceIndex)
     shuffled[destinationIndex++] = clone[randomIndex]
     clone[randomIndex] = clone[--sourceIndex]
   }
+  if (sourceIndex) shuffled[destinationIndex] = clone[0]
 
   return shuffled
 }
