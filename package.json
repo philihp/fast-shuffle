@@ -50,7 +50,7 @@
     "node": ">=14"
   },
   "dependencies": {
-    "pcg": "2.0.0"
+    "pcg": "3.0.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
