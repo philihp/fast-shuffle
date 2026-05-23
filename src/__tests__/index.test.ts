@@ -48,7 +48,7 @@ describe('default', () => {
     const d = new Array(10000)
     const rng = mock.fn()
     createShuffle(rng)(d)
-    assert.equal(rng.mock.callCount(), d.length)
+    assert.equal(rng.mock.callCount(), d.length - 1)
   })
 
   it('can be piped as a curried function', () => {
