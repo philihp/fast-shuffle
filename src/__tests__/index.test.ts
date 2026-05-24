@@ -1,5 +1,6 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
+import { randomBytes } from 'node:crypto'
 import { createPcg32, nextState, prevState, getOutput } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
 
@@ -206,5 +207,28 @@ describe('reversal from full PCG state', () => {
         assert.deepEqual(recovered, deck, `failed for seed=${seed} n=${n}`)
       }
     }
+  })
+})
+
+describe('rng selection', () => {
+  it('the default shuffle export uses Math.random (fine for non-adversarial use)', () => {
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const shuffled = shuffle(deck)
+    assert.equal(shuffled.length, deck.length)
+    assert.deepEqual([...shuffled].sort(), [...deck].sort())
+  })
+
+  // Math.random is not cryptographically secure, and the PCG seeded by
+  // shuffle() is reversible from a small amount of leaked output (see the
+  // "reversal from full PCG state" suite). For adversarial settings —
+  // shuffling cards in a poker game, raffles, security-sensitive sampling —
+  // pass a CSPRNG-backed rng to createShuffle. randomBytes(4) gives a
+  // uniform uint32, which is what randomExternal expects.
+  it('for cryptographically secure shuffles, pass a CSPRNG via createShuffle', () => {
+    const cryptoRng = () => randomBytes(4).readUInt32LE(0)
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const shuffled = createShuffle(cryptoRng)(deck)
+    assert.equal(shuffled.length, deck.length)
+    assert.deepEqual([...shuffled].sort(), [...deck].sort())
   })
 })
