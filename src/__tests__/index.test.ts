@@ -146,12 +146,11 @@ describe('reversal from full PCG state', () => {
     const shuffled = createShuffle(rng)(deck)
     assert.notDeepEqual(shuffled, deck)
 
-    const s4 = prevState(pcg)
-    const s3 = prevState(s4)
+    const s3 = prevState(pcg)
     const s2 = prevState(s3)
     const s1 = prevState(s2)
     const s0 = prevState(s1)
-    const replayed = [getOutput(s0), getOutput(s1), getOutput(s2), getOutput(s3), getOutput(s4)]
+    const replayed = [getOutput(s0), getOutput(s1), getOutput(s2), getOutput(s3)]
 
     let cursor = 0
     const perm = createShuffle(() => replayed[cursor++])([0, 1, 2, 3, 4])
