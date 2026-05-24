@@ -133,21 +133,11 @@ describe('createShuffle for reducers', () => {
   })
 })
 
-// The shuffle is fully reversible if you have the 64-bit PCG internal state
-// after the shuffle: pcg32's LCG step is invertible (pcg exposes prevState),
-// so stepping backward recovers every output sample, which recovers every
-// Fisher-Yates draw index, which lets us invert the permutation.
-//
-// To avoid duplicating any production code, these tests drive the real
-// createShuffle via its custom-rng API and keep the PCG state in the test's
-// own scope. After the shuffle, that state is the post-shuffle state.
 type Pcg = ReturnType<typeof createPcg32>
 
 const reverseShuffleFromState = <T>(shuffled: T[], stateFinal: Pcg): T[] => {
   const n = shuffled.length
 
-  // Step the LCG backward to recover each uint32 the library consumed during
-  // the forward shuffle (in original order).
   let s = stateFinal
   const replayedOutputs: number[] = []
   for (let i = 0; i < n; i++) {
@@ -155,13 +145,10 @@ const reverseShuffleFromState = <T>(shuffled: T[], stateFinal: Pcg): T[] => {
     replayedOutputs.unshift(getOutput(s))
   }
 
-  // Replay the same shuffle on [0..n-1] using those outputs — createShuffle
-  // itself produces the permutation π such that shuffled[i] = original[π[i]].
   let cursor = 0
   const replayRng = () => replayedOutputs[cursor++]
   const perm = createShuffle(replayRng)(Array.from({ length: n }, (_, i) => i))
 
-  // Inverting π recovers the original deck.
   const original = new Array<T>(n)
   for (let i = 0; i < n; i++) original[perm[i]] = shuffled[i]
   return original
@@ -213,12 +200,6 @@ describe('rng selection', () => {
     assert.deepEqual([...shuffled].sort(), [...deck].sort())
   })
 
-  // Math.random is not cryptographically secure, and the PCG seeded by
-  // shuffle() is reversible from a small amount of leaked output (see the
-  // "reversal from full PCG state" suite). For adversarial settings —
-  // shuffling cards in a poker game, raffles, security-sensitive sampling —
-  // pass a CSPRNG-backed rng to createShuffle. randomBytes(4) gives a
-  // uniform uint32, which is what randomExternal expects.
   it('for cryptographically secure shuffles, pass a CSPRNG via createShuffle', () => {
     const cryptoRng = () => randomBytes(4).readUInt32LE(0)
     const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
