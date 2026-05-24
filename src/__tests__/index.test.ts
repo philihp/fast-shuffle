@@ -1,5 +1,7 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
+import { randomBytes } from 'node:crypto'
+import { createPcg32, nextState, prevState, getOutput } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
 
 const pipe =
@@ -128,5 +130,53 @@ describe('createShuffle for reducers', () => {
     const [d2, r2] = createShuffle([s1, undefined])
     assert.ok(d1.every((r: string) => d2.includes(r)))
     assert.notDeepEqual(r1, r2)
+  })
+})
+
+describe('reversal from full PCG state', () => {
+  it('recovers the original 5-element deck from the final 64-bit pcg state', () => {
+    const deck = ['a', 'b', 'c', 'd', 'e']
+
+    let pcg = createPcg32({}, 12345, 67890)
+    const rng = () => {
+      const u = getOutput(pcg)
+      pcg = nextState(pcg)
+      return u
+    }
+    const shuffled = createShuffle(rng)(deck)
+    assert.notDeepEqual(shuffled, deck)
+
+    const s4 = prevState(pcg)
+    const s3 = prevState(s4)
+    const s2 = prevState(s3)
+    const s1 = prevState(s2)
+    const s0 = prevState(s1)
+    const replayed = [getOutput(s0), getOutput(s1), getOutput(s2), getOutput(s3), getOutput(s4)]
+
+    let cursor = 0
+    const perm = createShuffle(() => replayed[cursor++])([0, 1, 2, 3, 4])
+
+    const recovered = new Array<string>(5)
+    perm.forEach((p, i) => {
+      recovered[p] = shuffled[i]
+    })
+    assert.deepEqual(recovered, deck)
+  })
+})
+
+describe('rng selection', () => {
+  it('the default shuffle export uses Math.random (fine for non-adversarial use)', () => {
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const shuffled = shuffle(deck)
+    assert.equal(shuffled.length, deck.length)
+    assert.deepEqual([...shuffled].sort(), [...deck].sort())
+  })
+
+  it('for cryptographically secure shuffles, pass a CSPRNG via createShuffle', () => {
+    const cryptoRng = () => randomBytes(4).readUInt32LE(0)
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const shuffled = createShuffle(cryptoRng)(deck)
+    assert.equal(shuffled.length, deck.length)
+    assert.deepEqual([...shuffled].sort(), [...deck].sort())
   })
 })
