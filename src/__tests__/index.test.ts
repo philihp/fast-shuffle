@@ -145,28 +145,23 @@ type Pcg = ReturnType<typeof createPcg32>
 
 const reverseShuffleFromState = <T>(shuffled: T[], stateFinal: Pcg): T[] => {
   const n = shuffled.length
-  // Forward Fisher-Yates used bounds n, n-1, ..., 1; reversed it's 1..n.
-  // randomExternal (src/index.ts:30) maps each rng output u to index
-  // (u / 2^32) * bound | 0, consuming exactly one PCG sample per draw.
+
+  // Step the LCG backward to recover each uint32 the library consumed during
+  // the forward shuffle (in original order).
   let s = stateFinal
-  const recoveredIndices: number[] = []
-  for (let bound = 1; bound <= n; bound++) {
+  const replayedOutputs: number[] = []
+  for (let i = 0; i < n; i++) {
     s = prevState(s)
-    const u = getOutput(s)
-    recoveredIndices.unshift(((u / 2 ** 32) * bound) | 0)
+    replayedOutputs.unshift(getOutput(s))
   }
 
-  // Replay Fisher-Yates on indices [0..n-1] to derive the permutation π such
-  // that shuffled[i] = original[π[i]], then invert it.
-  const idx = Array.from({ length: n }, (_, i) => i)
-  const perm = new Array<number>(n)
-  let src = n
-  let dst = 0
-  for (let i = 0; i < n; i++) {
-    const r = recoveredIndices[i]
-    perm[dst++] = idx[r]
-    idx[r] = idx[--src]
-  }
+  // Replay the same shuffle on [0..n-1] using those outputs — createShuffle
+  // itself produces the permutation π such that shuffled[i] = original[π[i]].
+  let cursor = 0
+  const replayRng = () => replayedOutputs[cursor++]
+  const perm = createShuffle(replayRng)(Array.from({ length: n }, (_, i) => i))
+
+  // Inverting π recovers the original deck.
   const original = new Array<T>(n)
   for (let i = 0; i < n; i++) original[perm[i]] = shuffled[i]
   return original
