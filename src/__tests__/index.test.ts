@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
-import { createPcg32, prevState, getOutput, randomInt as pcgRandomInt } from 'pcg'
+import { createPcg32, nextState, prevState, getOutput } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
 
 const pipe =
@@ -137,55 +137,26 @@ describe('createShuffle for reducers', () => {
 // so stepping backward recovers every output sample, which recovers every
 // Fisher-Yates draw index, which lets us invert the permutation.
 //
-// Mirrors functionalShuffle in src/index.ts so the captured state matches
-// what the library would have used internally.
-const SEQUENCE = 12345
+// To avoid duplicating any production code, these tests drive the real
+// createShuffle via its custom-rng API and keep the PCG state in the test's
+// own scope. After the shuffle, that state is the post-shuffle state.
 type Pcg = ReturnType<typeof createPcg32>
-
-const forwardShuffleCapturingState = <T>(deck: T[], seed: number): { shuffled: T[]; stateFinal: Pcg } => {
-  let randState = createPcg32({}, seed, SEQUENCE)
-  const random = (maxIndex: number) => {
-    const [n, ns] = pcgRandomInt(0, maxIndex, randState)
-    randState = ns
-    return n
-  }
-  const clone = deck.slice()
-  let sourceIndex = clone.length
-  let destinationIndex = 0
-  const shuffled = new Array(clone.length)
-  while (sourceIndex) {
-    const r = random(sourceIndex)
-    shuffled[destinationIndex++] = clone[r]
-    clone[r] = clone[--sourceIndex]
-  }
-  // matches the trailing randNext(0, 2**32 - 1, randState) in src/index.ts:51
-  const [, stateFinal] = pcgRandomInt(0, 2 ** 32 - 1, randState)
-  return { shuffled, stateFinal }
-}
 
 const reverseShuffleFromState = <T>(shuffled: T[], stateFinal: Pcg): T[] => {
   const n = shuffled.length
-  // Undo the trailing randNext(0, 2**32 - 1): bound = 2**32 so threshold = 0,
-  // never rejects, exactly one state advance.
-  let s = prevState(stateFinal)
-
   // Forward Fisher-Yates used bounds n, n-1, ..., 1; reversed it's 1..n.
+  // randomExternal (src/index.ts:30) maps each rng output u to index
+  // (u / 2^32) * bound | 0, consuming exactly one PCG sample per draw.
+  let s = stateFinal
   const recoveredIndices: number[] = []
   for (let bound = 1; bound <= n; bound++) {
-    const threshold = ((2 ** 32 - bound) % bound) >>> 0
-    // pcg's randomInt advances state once per sample (accepted or rejected),
-    // so step back through any rejected draws to find the accepted one.
-    let raw: number
-    while (true) {
-      s = prevState(s)
-      raw = getOutput(s)
-      if (raw >= threshold) break
-    }
-    recoveredIndices.unshift(raw % bound)
+    s = prevState(s)
+    const u = getOutput(s)
+    recoveredIndices.unshift(((u / 2 ** 32) * bound) | 0)
   }
 
-  // Replay Fisher-Yates forward on [0..n-1] with the recovered indices to
-  // build the permutation, then invert it.
+  // Replay Fisher-Yates on indices [0..n-1] to derive the permutation π such
+  // that shuffled[i] = original[π[i]], then invert it.
   const idx = Array.from({ length: n }, (_, i) => i)
   const perm = new Array<number>(n)
   let src = n
@@ -203,19 +174,18 @@ const reverseShuffleFromState = <T>(shuffled: T[], stateFinal: Pcg): T[] => {
 describe('reversal from full PCG state', () => {
   it('recovers the original deck from the final 64-bit pcg state', () => {
     const deck = ['a', 'b', 'c', 'd', 'e']
-    const { shuffled, stateFinal } = forwardShuffleCapturingState(deck, 12345)
-    assert.notDeepEqual(shuffled, deck)
-    const recovered = reverseShuffleFromState(shuffled, stateFinal)
-    assert.deepEqual(recovered, deck)
-  })
 
-  it('matches the public createShuffle output, then reverses it', () => {
-    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    const seed = 12345
-    const [publicShuffled] = createShuffle([deck, seed])
-    const { shuffled, stateFinal } = forwardShuffleCapturingState(deck, seed)
-    assert.deepEqual(shuffled, publicShuffled)
-    const recovered = reverseShuffleFromState(publicShuffled, stateFinal)
+    let pcg: Pcg = createPcg32({}, 12345, 67890)
+    const rng = () => {
+      const u = getOutput(pcg)
+      pcg = nextState(pcg)
+      return u
+    }
+
+    const shuffled = createShuffle(rng)(deck)
+    assert.notDeepEqual(shuffled, deck)
+
+    const recovered = reverseShuffleFromState(shuffled, pcg)
     assert.deepEqual(recovered, deck)
   })
 
@@ -223,8 +193,16 @@ describe('reversal from full PCG state', () => {
     for (const seed of [1, 42, 12345, 2 ** 31 - 1, 0xdeadbeef]) {
       for (const n of [1, 2, 7, 16, 52, 100]) {
         const deck = Array.from({ length: n }, (_, i) => `item-${i}`)
-        const { shuffled, stateFinal } = forwardShuffleCapturingState(deck, seed)
-        const recovered = reverseShuffleFromState(shuffled, stateFinal)
+
+        let pcg: Pcg = createPcg32({}, seed, 67890)
+        const rng = () => {
+          const u = getOutput(pcg)
+          pcg = nextState(pcg)
+          return u
+        }
+
+        const shuffled = createShuffle(rng)(deck)
+        const recovered = reverseShuffleFromState(shuffled, pcg)
         assert.deepEqual(recovered, deck, `failed for seed=${seed} n=${n}`)
       }
     }
