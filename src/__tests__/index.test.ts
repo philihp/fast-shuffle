@@ -4,11 +4,6 @@ import { randomBytes } from 'node:crypto'
 import { createPcg32, nextState, prevState, getOutput } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
 
-const pipe =
-  (...fns: Array<(...args: any[]) => any>) =>
-  (...args: any[]) =>
-    fns.reduce<any>((value, fn, i) => (i === 0 ? fn(...args) : fn(value)), undefined)
-
 describe('default', () => {
   it('shuffles the array', () => {
     const pseudoShuffle = createShuffle(12345)
@@ -57,7 +52,7 @@ describe('default', () => {
     const pseudoShuffle = createShuffle(12345)
     const letters = () => ['a', 'b', 'c', 'd']
     const head = (array: unknown[]) => array?.[0]
-    const drawCard = pipe(letters, pseudoShuffle, head)
+    const drawCard = () => head(pseudoShuffle(letters()))
     assert.equal(drawCard(), 'c')
   })
 
