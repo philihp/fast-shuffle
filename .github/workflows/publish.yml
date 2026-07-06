@@ -1,0 +1,33 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Trusted publishing to npm requires an OIDC token, and provenance
+# attestations are written to the public transparency log.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/sort-unwind
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false # for releases, download fresh
+
+      # npm 11.5.1+ is required for OIDC trusted publishing, remove someday when default
+      - run: npm install -g npm@latest
+
+      - run: npm install
+      - run: npm run build
+      - run: npm stage publish --provenance --access public
