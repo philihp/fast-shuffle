@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.1] — 2026-07-06
+
+### Fixed
+
+- Republish to restore the README on the npm package page — npmjs.com only refreshes the displayed README on a new version publish, and it was showing "This package does not have a README" for 6.2.0 despite the registry metadata containing valid README content. Also listed `README.md` explicitly in `files` for good measure.
+
 ## [6.2.0] — 2026-05-26
 
 ### Performance
