@@ -1,18 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "schedule": ["every weekend"],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Independency Dashboard",
   "semanticCommits": "enabled",
-  "transitiveRemediation": true,
   "packageRules": [
     {
-      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
-      "depTypeList": ["devDependencies"],
+      "matchDepTypes": ["devDependencies"],
       "automerge": true
     }
   ]
