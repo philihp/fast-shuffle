@@ -72,5 +72,5 @@ export const shuffle = <T>(deck: T[]) => fastShuffle(randomInt(), deck)
 
 export const createShuffle = fastShuffle
 
-// DEPRECATED, switch to createShuffle
+/** @deprecated use `createShuffle` */
 export default fastShuffle
