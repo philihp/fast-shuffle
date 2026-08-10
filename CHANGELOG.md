@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Toolchain update: TypeScript 7, ESLint replaced with oxlint, and the two `tsc` builds replaced with a single `tsdown` build.
+- The published bundle now lives at `dist/index.js` (ESM), `dist/index.cjs` (CJS), with `dist/index.d.ts` / `dist/index.d.cts` types and source maps. The `exports` map is updated to match; import paths for consumers are unchanged.
+- Renovate now automerges updates once every status check on the branch passes, and CI runs `lint` and `typecheck` alongside the build and tests.
+
 ## [6.2.1] — 2026-07-06
 
 ### Fixed
