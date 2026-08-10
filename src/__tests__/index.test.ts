@@ -43,7 +43,7 @@ describe('default', () => {
 
   it('scales calls to random linearly', () => {
     const d = new Array(10000)
-    const rng = mock.fn()
+    const rng = mock.fn(() => 0)
     createShuffle(rng)(d)
     assert.equal(rng.mock.callCount(), d.length - 1)
   })

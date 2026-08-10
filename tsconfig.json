@@ -1,11 +1,12 @@
 {
   "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "declaration": true
+    "noEmit": true,
+    "types": ["node"]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "./tsdown.config.ts"]
 }

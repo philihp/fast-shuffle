@@ -17,29 +17,32 @@
   ],
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "files": [
     "/dist",
-    "!/dist/**/__tests__/*",
     "/README.md"
   ],
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p tsconfig.build.esm.json",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json && node -e \"require('node:fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
-    "lint": "eslint src",
+    "build": "tsdown",
+    "lint": "oxlint src",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "test": "node --import tsx --test src/__tests__/index.test.ts",
     "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage',{recursive:true})\" && node --import tsx --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test src/__tests__/index.test.ts",
@@ -54,21 +57,20 @@
     "pcg": "3.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "10.0.1",
     "@philihp/prettier-config": "1.0.0",
     "@tsconfig/node24": "24.0.4",
-    "eslint": "10.8.1",
-    "eslint-plugin-prettier": "5.5.6",
+    "@types/node": "26.2.0",
     "husky": "9.1.7",
     "lint-staged": "17.3.0",
+    "oxlint": "1.78.0",
     "prettier": "3.9.6",
+    "tsdown": "0.22.14",
     "tsx": "4.23.11",
-    "typescript": "6.0.3",
-    "typescript-eslint": "8.66.0"
+    "typescript": "7.0.2"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,json,.ts,.tsx}": [
-      "eslint src --fix",
+      "oxlint --fix",
       "prettier --write"
     ]
   },

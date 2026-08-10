@@ -5,13 +5,15 @@
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Independency Dashboard",
   "semanticCommits": "enabled",
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": false,
+  "ignoreTests": false,
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
-    },
-    {
-      "matchDepTypes": ["devDependencies"],
+      "description": "Automerge everything, but only once every status check on the branch is green.",
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest", "bump", "lockFileMaintenance"],
       "automerge": true
     }
   ]
