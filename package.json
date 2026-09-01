@@ -62,7 +62,7 @@
     "@types/node": "26.2.0",
     "husky": "9.1.7",
     "lint-staged": "17.3.0",
-    "oxlint": "1.79.0",
+    "oxlint": "1.81.0",
     "prettier": "3.9.6",
     "tsdown": "0.22.14",
     "tsx": "4.23.12",
