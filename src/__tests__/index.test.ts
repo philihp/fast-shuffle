@@ -216,8 +216,23 @@ describe('reversal from full PCG state', () => {
 
 describe('internal pcg32', () => {
   it('draws exactly what the pcg package draws', () => {
-    const seeds = [0, 1, -1, 12345, 2 ** 31 - 1, 2 ** 32 - 1, 2 ** 32, 1761523200000, Number.MAX_SAFE_INTEGER]
-    const bounds = Array.from({ length: 2000 }, (_, i) => (i % 3 === 0 ? 2 ** 32 - 1 - i : 2 + i))
+    // the state of seeds 49184 and 73598 carries out of its low word within the
+    // first few draws, which happens about once in 170,000 steps otherwise
+    const seeds = [
+      0,
+      1,
+      -1,
+      12345,
+      49184,
+      73598,
+      2 ** 31 - 1,
+      2 ** 32 - 1,
+      2 ** 32,
+      1761523200000,
+      Number.MAX_SAFE_INTEGER,
+    ]
+    // a bound just above 2^31 rejects almost half of the draws
+    const bounds = Array.from({ length: 2000 }, (_, i) => [2 + i, 2 ** 32 - 1 - i, 2 ** 31 + 1 + i][i % 3])
     seeds.forEach((seed) => {
       let state = createPcg32({}, seed, 12345)
       const expected = bounds.map((bound) => {
