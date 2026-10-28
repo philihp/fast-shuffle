@@ -51,10 +51,10 @@
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=14"
   },
   "dependencies": {
-    "pcg": "4.0.0"
+    "pcg": "4.1.0"
   },
   "devDependencies": {
     "@philihp/prettier-config": "1.0.0",
