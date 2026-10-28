@@ -9,5 +9,5 @@ export default defineConfig({
   dts: true,
   clean: true,
   treeshake: true,
-  sourcemap: true,
+  sourcemap: false,
 })
