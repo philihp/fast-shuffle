@@ -54,7 +54,7 @@
     "node": ">=14"
   },
   "dependencies": {
-    "pcg": "3.0.0"
+    "pcg": "4.1.0"
   },
   "devDependencies": {
     "@philihp/prettier-config": "1.0.0",

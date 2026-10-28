@@ -4,6 +4,11 @@ import { randomBytes } from 'node:crypto'
 import { createPcg32, nextState, prevState, getOutput } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
 
+const replay = (draws: readonly number[]) => {
+  const remaining = draws.values()
+  return () => remaining.next().value as number
+}
+
 describe('default', () => {
   it('shuffles the array', () => {
     const pseudoShuffle = createShuffle(12345)
@@ -86,6 +91,56 @@ describe('default', () => {
     const d2 = createShuffle(12345, d1)
     assert.deepEqual(d2, ['C', 'G', 'H', 'B', 'F', 'D', 'E', 'A'])
   })
+
+  it('gives the README example its documented orders', () => {
+    const letters = ['a', 'b', 'c', 'd', 'e']
+    const shuffleRed = createShuffle(12345)
+    assert.deepEqual(shuffleRed(letters), ['c', 'b', 'e', 'd', 'a'])
+    assert.deepEqual(shuffleRed(letters), ['c', 'e', 'b', 'd', 'a'])
+    assert.deepEqual(shuffleRed(letters), ['c', 'b', 'a', 'd', 'e'])
+    assert.deepEqual(shuffleRed(letters), ['c', 'a', 'b', 'e', 'd'])
+  })
+
+  it('accepts readonly arrays', () => {
+    const deck: readonly string[] = Object.freeze(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
+    const sorted = (cards: readonly string[]) => [...cards].sort()
+    assert.deepEqual(sorted(shuffle(deck)), sorted(deck))
+    assert.deepEqual(sorted(createShuffle(12345)(deck)), sorted(deck))
+    assert.deepEqual(sorted(createShuffle(12345, deck)), sorted(deck))
+    const [shuffled, seed] = createShuffle([deck, 12345] as const)
+    assert.deepEqual(shuffled, ['C', 'G', 'H', 'B', 'F', 'D', 'E', 'A'])
+    assert.equal(typeof seed, 'number')
+  })
+})
+
+describe('bring your own randomizer', () => {
+  it('uses a float randomizer (0..1) instead of flooring it to index 0', () => {
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f']
+    const shuffleMath = createShuffle(Math.random)
+    const orders = new Set(Array.from({ length: 20 }, () => shuffleMath(letters).join('')))
+    assert.ok(orders.size > 1)
+  })
+
+  it('gives a fixed order for fixed float draws', () => {
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const draws = [0.1, 0.7, 0.3, 0.9, 0.5, 0.2, 0.8]
+    const expected = ['A', 'E', 'B', 'G', 'C', 'H', 'F', 'D']
+    assert.deepEqual(createShuffle(replay(draws))(deck), expected)
+    assert.deepEqual(createShuffle(replay(draws), deck), expected)
+  })
+
+  it('gives a fixed order for fixed 32-bit integer draws', () => {
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const draws = [429496729, 3006477107, 1288490188, 3865470566, 2147483648, 858993459, 3435973836]
+    assert.deepEqual(createShuffle(replay(draws))(deck), ['A', 'E', 'B', 'G', 'C', 'H', 'F', 'D'])
+  })
+
+  it('reads a float and the same draw scaled to 32 bits the same way', () => {
+    const deck = Array.from({ length: 16 }, (_, i) => i)
+    const floats = Array.from({ length: 15 }, (_, i) => ((i * 7) % 16) / 16)
+    const integers = floats.map((f) => f * 2 ** 32)
+    assert.deepEqual(createShuffle(replay(floats))(deck), createShuffle(replay(integers))(deck))
+  })
 })
 
 describe('shuffle', () => {
@@ -158,12 +213,26 @@ describe('reversal from full PCG state', () => {
   })
 })
 
+describe('seeds', () => {
+  it('rejects the seeds pcg rejects', () => {
+    assert.throws(() => createShuffle(1.5), RangeError)
+    assert.throws(() => createShuffle(NaN), RangeError)
+  })
+})
+
 describe('rng selection', () => {
   it('the default shuffle export uses Math.random (fine for non-adversarial use)', () => {
     const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const shuffled = shuffle(deck)
     assert.equal(shuffled.length, deck.length)
     assert.deepEqual([...shuffled].sort(), [...deck].sort())
+  })
+
+  it('the default shuffle export draws from Math.random each call, so a stub pins its order', (t) => {
+    const random = t.mock.method(Math, 'random', () => 0.5)
+    const deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    assert.deepEqual(shuffle(deck), ['E', 'D', 'G', 'C', 'H', 'B', 'F', 'A'])
+    assert.equal(random.mock.callCount(), deck.length - 1)
   })
 
   it('for cryptographically secure shuffles, pass a CSPRNG via createShuffle', () => {

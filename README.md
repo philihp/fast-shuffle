@@ -26,24 +26,37 @@ const shuffledDeck = shuffle(sortedDeck)
 // [ '3♥', '3♦', 'K♥', '6♦', 'J♣', '5♠', 'A♠', ...
 ```
 
-The named `shuffle` export seen above uses `Math.random` for entropy. This is the easiest way to use the library, but it may be useful to create a purely functional shuffler which takes either a random seed which is used in a [PCG](https://www.pcg-random.org/) for entropy, or a function ([as seen here](https://github.com/philihp/fast-shuffle/blob/c36f6cfb27312590301446721b5ba0539baab591/src/__tests__/index.test.ts#L62-L73)).
+The named `shuffle` export seen above draws from `Math.random`. This is the easiest way to use the library, but it may be useful to create a purely functional shuffler which takes either a random seed which is used in a [PCG](https://www.pcg-random.org/) for entropy, or your own randomizer: a function that returns either a float in [0, 1), like `Math.random`, or an unsigned 32-bit integer, like most seeded generators.
 
 ```js
 import { createShuffle } from 'fast-shuffle' // note the change
 
 const letters = ['a', 'b', 'c', 'd', 'e']
 const shuffleRed = createShuffle(12345)
-shuffleRed(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
-shuffleRed(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
-shuffleRed(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
-shuffleRed(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
+shuffleRed(letters) // [ 'c', 'b', 'e', 'd', 'a' ]
+shuffleRed(letters) // [ 'c', 'e', 'b', 'd', 'a' ]
+shuffleRed(letters) // [ 'c', 'b', 'a', 'd', 'e' ]
+shuffleRed(letters) // [ 'c', 'a', 'b', 'e', 'd' ]
 
 const shuffleBlue = createShuffle(12345)
-shuffleBlue(letters) // [ 'a', 'b', 'c', 'd', 'e' ]
-shuffleBlue(letters) // [ 'a', 'd', 'b', 'e', 'c' ]
-shuffleBlue(letters) // [ 'c', 'a', 'e', 'b', 'd' ]
-shuffleBlue(letters) // [ 'b', 'c', 'e', 'a', 'd' ]
+shuffleBlue(letters) // [ 'c', 'b', 'e', 'd', 'a' ]
+shuffleBlue(letters) // [ 'c', 'e', 'b', 'd', 'a' ]
+shuffleBlue(letters) // [ 'c', 'b', 'a', 'd', 'e' ]
+shuffleBlue(letters) // [ 'c', 'a', 'b', 'e', 'd' ]
 ```
+
+Your own randomizer makes a shuffle exact in unit tests. A fixed list of draws always gives the same order:
+
+```js
+import { createShuffle } from 'fast-shuffle'
+
+const draws = [0.1, 0.7, 0.3, 0.9, 0.5, 0.2, 0.8]
+const riggedShuffle = createShuffle(() => draws.shift())
+riggedShuffle(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
+// [ 'A', 'E', 'B', 'G', 'C', 'H', 'F', 'D' ]
+```
+
+If the code under test calls `shuffle`, it reads `Math.random` on every call, so a stub of `Math.random` (for example `mock.method(Math, 'random', () => 0.5)` in `node:test`) pins its order too.
 
 The parameters are also curried, so it can be used in [pipelines](https://github.com/tc39/proposal-pipeline-operator).
 

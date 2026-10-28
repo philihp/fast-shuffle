@@ -7,11 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Performance
+
+- `shuffle(deck)` draws from `Math.random` directly, instead of seeding a new PCG on every call: 8–14× faster in Node 22 and 4–8× in Chrome 153, about the same speed as `array-shuffle`.
+- Seeded shuffles (`createShuffle(seed)` and `createShuffle([deck, seed])`) are 2.7–2.9× faster in Node 22 and 1.5–1.7× in Chrome 153, mostly from `pcg` 4.1.0's faster `createPcg32` and `randomInt`. A given seed gives the same output as before.
+- The shuffle swaps items inside its own copy of the array, instead of filling a second array. The input array is never changed.
+
+### Fixed
+
+- `createShuffle(fn)` now reads a float randomizer in [0, 1), such as `Math.random`. Before, it divided every value by 2^32, so a float randomizer always picked index 0 and nothing was shuffled; the README's own `createShuffle(Math.random)` example gave the same order every time. Randomizers that return unsigned 32-bit integers are read as before.
+- The types accept `readonly` arrays, and a `readonly` `[deck, seed]` tuple.
+- The README's seeded example shows the orders the library really gives.
+
 ### Changed
 
+- Depends on `pcg` 4.1.0 (was 3.0.0). Node.js 14 and later are still supported: the build targets Node 14, and a new CI job builds on the newest Node and checks the built package, ESM and CommonJS, on Node 14, 16, 18 and 20 against outputs recorded on the newest Node (`test/compat`). The full test suite runs on Node 22 and 24, since the toolchain needs Node 22.
 - Toolchain update: TypeScript 7, ESLint replaced with oxlint, and the two `tsc` builds replaced with a single `tsdown` build.
 - The published bundle now lives at `dist/index.js` (ESM), `dist/index.cjs` (CJS), with `dist/index.d.ts` / `dist/index.d.cts` types and source maps. The `exports` map is updated to match; import paths for consumers are unchanged.
 - Renovate now automerges updates once every status check on the branch passes, and CI runs `lint` and `typecheck` alongside the build and tests.
+
+### Notes
+
+- For tests that pin a shuffle: a seed, and a randomizer that returns 32-bit integers, give exactly the same orders as 6.2.1. Two cases give a different (still fixed) order: a float randomizer passed to `createShuffle`, which before never shuffled, and `shuffle(deck)` under a stubbed `Math.random`, which before only made a PCG seed and now gives the draws.
 
 ## [6.2.1] — 2026-07-06
 
