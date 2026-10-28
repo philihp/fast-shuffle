@@ -65,22 +65,25 @@ export const createRandom = (seed: number) => {
     return ((word >>> rotation) | (word << (-rotation & 31))) >>> 0
   }
 
+  // a draw below the threshold is rejected and replaced by the next one;
+  // fewer than half of all draws are rejected, so the recursion stays shallow
+  const atLeast = (threshold: number, draw: number): number => {
+    if (draw >= threshold) return draw
+    const redraw = output()
+    step()
+    return atLeast(threshold, redraw)
+  }
+
   step()
 
   return (bound: number) => {
-    let draw = output()
+    const draw = output()
     step()
     // the rejection threshold, 2^32 mod bound, is always below bound, so a
     // draw at or above bound is accepted without computing it
-    if (draw < bound) {
-      const threshold = (2 ** 32 - bound) % bound
-      while (draw < threshold) {
-        draw = output()
-        step()
-      }
-    }
-    // draw % bound, without the float modulo V8 falls back to for a draw at or
-    // above 2^31; the quotient of two integers below 2^32 floors exactly
-    return draw - Math.floor(draw / bound) * bound
+    const accepted = draw < bound ? atLeast((2 ** 32 - bound) % bound, draw) : draw
+    // accepted % bound, without the float modulo V8 falls back to for a draw
+    // at or above 2^31; the quotient of two integers below 2^32 floors exactly
+    return accepted - Math.floor(accepted / bound) * bound
   }
 }

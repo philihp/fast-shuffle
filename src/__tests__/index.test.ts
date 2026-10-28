@@ -5,9 +5,9 @@ import { createPcg32, nextState, prevState, getOutput, randomInt } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
 import { createRandom } from '../pcg32.ts'
 
-const replay = (draws: number[]) => {
-  let cursor = 0
-  return () => draws[cursor++]
+const replay = (draws: readonly number[]) => {
+  const remaining = draws.values()
+  return () => remaining.next().value as number
 }
 
 describe('default', () => {
@@ -234,12 +234,14 @@ describe('internal pcg32', () => {
     // a bound just above 2^31 rejects almost half of the draws
     const bounds = Array.from({ length: 2000 }, (_, i) => [2 + i, 2 ** 32 - 1 - i, 2 ** 31 + 1 + i][i % 3])
     seeds.forEach((seed) => {
-      let state = createPcg32({}, seed, 12345)
-      const expected = bounds.map((bound) => {
-        const [draw, next] = randomInt(0, bound, state)
-        state = next
-        return draw
-      })
+      const [, expected] = bounds.reduce<[ReturnType<typeof createPcg32>, number[]]>(
+        ([state, draws], bound) => {
+          const [draw, next] = randomInt(0, bound, state)
+          draws.push(draw)
+          return [next, draws]
+        },
+        [createPcg32({}, seed, 12345), []]
+      )
       const random = createRandom(seed)
       assert.deepEqual(
         bounds.map((bound) => random(bound)),
