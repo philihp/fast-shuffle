@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] — 2026-10-28
+
 ### Performance
 
 - `shuffle(deck)` draws from `Math.random` directly, instead of seeding a new PCG on every call: 8–14× faster in Node 22 and 4–8× in Chrome 153, about the same speed as `array-shuffle`.
@@ -29,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - For tests that pin a shuffle: a seed, and a randomizer that returns 32-bit integers, give exactly the same orders as 6.2.1. Two cases give a different (still fixed) order: a float randomizer passed to `createShuffle`, which before never shuffled, and `shuffle(deck)` under a stubbed `Math.random`, which before only made a PCG seed and now gives the draws.
+- This is a major version because of those two cases: a test that pinned one of those orders gets a different order after the update. The API, the exports and the supported Node versions do not change.
 
 ## [6.2.1] — 2026-07-06
 
@@ -126,7 +129,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[Unreleased]: https://github.com/philihp/fast-shuffle/compare/v6.2.0...HEAD
+[Unreleased]: https://github.com/philihp/fast-shuffle/compare/v7.0.0...HEAD
+[7.0.0]: https://github.com/philihp/fast-shuffle/compare/v6.2.1...v7.0.0
+[6.2.1]: https://github.com/philihp/fast-shuffle/compare/v6.2.0...v6.2.1
 [6.2.0]: https://github.com/philihp/fast-shuffle/compare/v6.1.1...v6.2.0
 [6.1.1]: https://github.com/philihp/fast-shuffle/compare/v6.1.0...v6.1.1
 [6.1.0]: https://github.com/philihp/fast-shuffle/compare/v6.0.1...v6.1.0
