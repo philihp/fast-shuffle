@@ -1,9 +1,8 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
 import { randomBytes } from 'node:crypto'
-import { createPcg32, nextState, prevState, getOutput, randomInt } from 'pcg'
+import { createPcg32, nextState, prevState, getOutput } from 'pcg'
 import { shuffle, createShuffle } from '../index.ts'
-import { createRandom } from '../pcg32.ts'
 
 const replay = (draws: readonly number[]) => {
   const remaining = draws.values()
@@ -214,42 +213,7 @@ describe('reversal from full PCG state', () => {
   })
 })
 
-describe('internal pcg32', () => {
-  it('draws exactly what the pcg package draws', () => {
-    // the state of seeds 49184 and 73598 carries out of its low word within the
-    // first few draws, which happens about once in 170,000 steps otherwise
-    const seeds = [
-      0,
-      1,
-      -1,
-      12345,
-      49184,
-      73598,
-      2 ** 31 - 1,
-      2 ** 32 - 1,
-      2 ** 32,
-      1761523200000,
-      Number.MAX_SAFE_INTEGER,
-    ]
-    // a bound just above 2^31 rejects almost half of the draws
-    const bounds = Array.from({ length: 2000 }, (_, i) => [2 + i, 2 ** 32 - 1 - i, 2 ** 31 + 1 + i][i % 3])
-    seeds.forEach((seed) => {
-      const [, expected] = bounds.reduce<[ReturnType<typeof createPcg32>, number[]]>(
-        ([state, draws], bound) => {
-          const [draw, next] = randomInt(0, bound, state)
-          draws.push(draw)
-          return [next, draws]
-        },
-        [createPcg32({}, seed, 12345), []]
-      )
-      const random = createRandom(seed)
-      assert.deepEqual(
-        bounds.map((bound) => random(bound)),
-        expected
-      )
-    })
-  })
-
+describe('seeds', () => {
   it('rejects the seeds pcg rejects', () => {
     assert.throws(() => createShuffle(1.5), RangeError)
     assert.throws(() => createShuffle(NaN), RangeError)

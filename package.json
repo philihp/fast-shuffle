@@ -51,7 +51,10 @@
   "author": "Philihp Busby <philihp@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=14"
+    "node": ">=22"
+  },
+  "dependencies": {
+    "pcg": "4.0.0"
   },
   "devDependencies": {
     "@philihp/prettier-config": "1.0.0",
@@ -60,7 +63,6 @@
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "oxlint": "1.87.0",
-    "pcg": "3.0.0",
     "prettier": "3.9.10",
     "tsdown": "0.23.1",
     "tsx": "4.23.15",

@@ -1,6 +1,20 @@
-import { createRandom } from './pcg32.ts'
+import { createPcg32, randomInt as randNext } from 'pcg'
+
+const SEQUENCE = 12345
 
 type FastShuffleState<T> = [deck: T[], seed: number]
+
+// A seeded random function: given n, an unbiased integer 0..n-1. The shuffle
+// calls it once per item, so it keeps the current pcg state and moves it on
+// with every draw; that is the one binding here that has to change.
+const createRandom = (seed: number) => {
+  let randState = createPcg32({}, seed, SEQUENCE)
+  return (maxIndex: number): number => {
+    const [nextInt, nextState] = randNext(0, maxIndex, randState)
+    randState = nextState
+    return nextInt
+  }
+}
 
 /**
  * Your own randomizer: either a float in [0, 1), like `Math.random`, or an

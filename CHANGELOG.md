@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Performance
 
 - `shuffle(deck)` draws from `Math.random` directly, instead of seeding a new PCG on every call: 8–14× faster in Node 22 and 4–8× in Chrome 153, about the same speed as `array-shuffle`.
-- Seeded shuffles (`createShuffle(seed)` and `createShuffle([deck, seed])`) use a built-in PCG32 that keeps its state in a `Uint32Array`, instead of a new state object per draw: 4–5× faster in Node 22 and about 2× in Chrome 153. A given seed gives the same output as before.
+- Seeded shuffles (`createShuffle(seed)` and `createShuffle([deck, seed])`) are 2.7–2.9× faster in Node 22 and 1.5–1.7× in Chrome 153, mostly from `pcg` 4.0.0's faster `createPcg32` and `randomInt`. A given seed gives the same output as before.
 - The shuffle works on one copy of the array, swapped in place, instead of a copy plus a second array.
 
 ### Fixed
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `pcg` is now a dev dependency only (the tests check the built-in PCG32 against it), so fast-shuffle has no runtime dependencies.
+- **Requires Node.js 22 or later.** fast-shuffle now depends on `pcg` 4.0.0 (was 3.0.0), which needs Node 22, so `engines.node` goes from `>=14` to `>=22`, and CI no longer tests Node 20.
 - Toolchain update: TypeScript 7, ESLint replaced with oxlint, and the two `tsc` builds replaced with a single `tsdown` build.
 - The published bundle now lives at `dist/index.js` (ESM), `dist/index.cjs` (CJS), with `dist/index.d.ts` / `dist/index.d.cts` types and source maps. The `exports` map is updated to match; import paths for consumers are unchanged.
 - Renovate now automerges updates once every status check on the branch passes, and CI runs `lint` and `typecheck` alongside the build and tests.
