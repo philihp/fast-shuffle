@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@philihp/prettier-config": "1.0.0",
-    "@tsconfig/node24": "24.0.5",
+    "@tsconfig/node24": "24.0.6",
     "@types/node": "26.6.6",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
